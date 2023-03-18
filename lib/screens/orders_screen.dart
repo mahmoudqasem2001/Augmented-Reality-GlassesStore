@@ -1,21 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:provider/provider.dart';
+import '../providers/orders.dart' show Orders;
 import 'package:shop_app/widgets/app_drawer.dart';
 
+import '../widgets/order_item.dart';
+
 class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({Key key}) : super(key: key);
   static const routeName = '/order';
+
+  const OrdersScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("orders screen"),
+        title:const Text("Your Order"),
       ),
-      body: Center(child: Text("orders screen")),
       drawer: AppDrawer(),
+      body: FutureBuilder(
+        builder: (ctx, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else {
+            if (snapshot.error != null) {
+              return const Center(
+                child: Text('An error occured!'),
+              );
+            } else {
+              return Consumer<Orders>(
+                builder: (ctx, orderData, child) => ListView.builder(
+                  itemBuilder: (BuildContext context, int index) =>
+                      OrderItem(orderData.orders[index]),
+                  itemCount: orderData.orders.length,
+                ),
+              );
+            }
+          }
+        },
+        future: Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
+      ),
     );
   }
 }

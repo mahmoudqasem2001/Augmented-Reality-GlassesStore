@@ -41,8 +41,8 @@ class Products with ChangeNotifier {
     ),
   ];
 
-  String authToken;
-  String userId;
+  String authToken = '';
+  String userId = '';
 
   getData(String authToken, String uId, List<Product> products) {
     this.authToken = authToken;
@@ -71,18 +71,19 @@ class Products with ChangeNotifier {
         'https://shop-43d63-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filteredString';
 
     try {
-      final res = await http.get(url);
+      final res = await http.get(Uri.parse(url));
       final extractedData = json.decode(res.body) as Map<String, dynamic>;
-      if (extractedData == null) {
+      if (extractedData != true) {
         return;
       }
       url =
           'https://shop-43d63-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
 
-      final favRes = await http.get(url);
+      final favRes = await http.get(Uri.parse(url));
       final favData = json.decode(favRes.body);
 
       final List<Product> loadedProducts = [];
+
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
           id: prodId,
@@ -93,10 +94,11 @@ class Products with ChangeNotifier {
           imageUrl: prodData['imageUrl'],
         ));
       });
+
       _items = loadedProducts;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -105,7 +107,7 @@ class Products with ChangeNotifier {
         'https://shop-43d63-default-rtdb.firebaseio.com/products.json?auth=$authToken';
 
     try {
-      final res = await http.post(url,
+      final res = await http.post(Uri.parse(url),
           body: json.encode({
             'title': product.title,
             'description': product.description,
@@ -124,7 +126,7 @@ class Products with ChangeNotifier {
       _items.add(newProduct);
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -133,7 +135,7 @@ class Products with ChangeNotifier {
     if (prodIndex >= 0) {
       final url =
           'https://shop-43d63-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
-      await http.patch(url,
+      await http.patch(Uri.parse(url),
           body: json.encode({
             'title': newProduct.title,
             'description': newProduct.description,
@@ -143,8 +145,6 @@ class Products with ChangeNotifier {
 
       _items[prodIndex] = newProduct;
       notifyListeners();
-    } else {
-      print("...");
     }
   }
 
@@ -152,15 +152,15 @@ class Products with ChangeNotifier {
     final url =
         'https://shop-43d63-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
-    var existingProduct = _items[existingProductIndex];
+    Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
     notifyListeners();
 
-    final res = await http.delete(url);
+    final res = await http.delete(Uri.parse(url));
     if (res.statusCode >= 400) {
       _items.insert(existingProductIndex, existingProduct);
       notifyListeners();
-      throw HttpException('Could not delete Product.');
+      throw const HttpException('Could not delete Product.');
     }
     existingProduct = null;
   }

@@ -7,25 +7,25 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
-  String _token;
-  DateTime _expiryDate;
-  String _userId;
-  Timer _auhtTimer;
+  String? _token;
+  DateTime? _expiryDate;
+  String? _userId;
+  Timer? _auhtTimer;
 
   bool get isAuth {
-    return token != null;
+    return token!= null;
   }
 
-  String get token {
+  String? get token {
     if (_expiryDate != null &&
-        _expiryDate.isAfter(DateTime.now()) &&
+        _expiryDate!.isAfter(DateTime.now()) &&
         _token != null) {
       return _token;
     }
     return null;
   }
 
-  String get userId {
+  String? get userId {
     return _userId;
   }
 
@@ -34,7 +34,7 @@ class Auth with ChangeNotifier {
     final url =
         'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyAMA7FZYcD7fKDKqOBlEEPu-yIDC4kdM3M';
     try {
-      final res = await http.post(url,
+      final res = await http.post(Uri.parse(url),
           body: json.encode({
             'email': email,
             'password': password,
@@ -42,7 +42,7 @@ class Auth with ChangeNotifier {
           }));
       final responseDate = json.decode(res.body);
       if (responseDate['error'] != null) {
-       throw HttpException(responseDate['error']['message']);
+        throw HttpException(responseDate['error']['message']);
       }
       _token = responseDate['idToken'];
       _userId = responseDate['localId'];
@@ -56,11 +56,11 @@ class Auth with ChangeNotifier {
       String userData = json.encode({
         'token': _token,
         'userId': _userId,
-        'expiryDate': _expiryDate.toIso8601String(),
+        'expiryDate': _expiryDate!.toIso8601String(),
       });
       prefs.setString('userData', userData);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -76,14 +76,14 @@ class Auth with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) return false;
 
-    final Map<String, Object> extractedData =
-        json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final Map<String, Object> extractedData = json
+        .decode(prefs.getString('userData') as String) as Map<String, Object>;
 
-    final expiryDate = DateTime.parse(extractedData['expiryDate']);
+    final expiryDate = DateTime.parse(extractedData['expiryDate'] as String);
     if (expiryDate.isBefore(DateTime.now())) return false;
 
-    _token = extractedData['token'];
-    _userId = extractedData['userId'];
+    _token = extractedData['token'] as String;
+    _userId = extractedData['userId'] as String;
     _expiryDate = expiryDate;
 
     notifyListeners();
@@ -96,8 +96,9 @@ class Auth with ChangeNotifier {
     _token = null;
     _userId = null;
     _expiryDate = null;
-    if (_auhtTimer != null) {
-      _auhtTimer.cancel();
+    if (_auhtTimer !=null) {
+      _auhtTimer!.cancel();
+
       _auhtTimer = null;
     }
     notifyListeners();
@@ -108,11 +109,11 @@ class Auth with ChangeNotifier {
 
   void _autoLogout() {
     if (_auhtTimer != null) {
-      _auhtTimer.cancel();
+      _auhtTimer!.cancel();
       _auhtTimer = null;
     }
 
-    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
+    final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
     _auhtTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }

@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
-  final String id;
-  final String title;
-  final String description;
-  final double price;
-  final String imageUrl;
-  bool isFavorite=false;
+  final String? id;
+  final String? title;
+  final String? description;
+  final double? price;
+  final String? imageUrl;
+  bool isFavorite;
 
-  Product({
-      this.id,
-      this.title,
-      this.description,
-      this.price,
-      this.imageUrl,
-      this.isFavorite});
+  Product(
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.price,
+      required this.imageUrl,
+      this.isFavorite = false});
 
   void _setFavValue(bool newValue) {
     isFavorite = newValue;
@@ -29,10 +29,11 @@ class Product with ChangeNotifier {
     isFavorite = !isFavorite;
     notifyListeners();
 
-    final url ='https://shop-43d63-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+    final url =
+        'https://shop-43d63-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
 
     try {
-      final res = await http.put(url, body: json.encode(isFavorite));
+      final res = await http.put(Uri.parse(url), body: json.encode(isFavorite));
       if (res.statusCode >= 400) {
         _setFavValue(oldStatus);
       }

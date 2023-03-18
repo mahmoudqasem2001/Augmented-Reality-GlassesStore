@@ -7,10 +7,10 @@ class CartItem {
   final double price;
 
   CartItem({
-    this.id,
-    this.title,
-    this.quantity,
-    this.price,
+    required this.id,
+    required this.title,
+    required this.quantity,
+    required this.price,
   });
 }
 
@@ -27,8 +27,8 @@ class Cart with ChangeNotifier {
 
   double get totalAmount {
     var total = 0.0;
-    _items.forEach((key, CartItem) {
-      total += CartItem.price * CartItem.quantity;
+    _items.forEach((key, cartItem) {
+      total += cartItem.price * cartItem.quantity;
     });
     return total;
   }
@@ -67,7 +67,7 @@ class Cart with ChangeNotifier {
       return;
     }
 
-    if (_items[productId].quantity > 1) {
+    if (_items[productId]!.quantity > 1) {
       _items.update(
           productId,
           (existingCartItem) => CartItem(
