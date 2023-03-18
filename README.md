@@ -2,13 +2,13 @@ Shop App
 This is a Shop App built with Flutter and Firebase as a backend. The app allows users to add, edit, and remove products from the shop, and provides full cart management functionality.
 
 Features
-User authentication using Firebase Authentication.
-Add, edit, and remove products from the shop.
-View product details including the product description, price, and image.
-Add products to the cart.
-Remove products from the cart.
-View the cart, including the total cost of all products in the cart.
-Checkout the cart using Firebase as the payment gateway.
+-User authentication using Firebase Authentication.
+-Add, edit, and remove products from the shop.
+-View product details including the product description, price, and image.
+-Add products to the cart.
+-Remove products from the cart.
+-View the cart, including the total cost of all products in the cart.
+-Checkout the cart using Firebase as the payment gateway.
 Requirements
 Flutter version 2.0.0 or later.
 Android Studio or Visual Studio Code.
@@ -32,3 +32,4 @@ When the user is ready to checkout, they can click the "Checkout" button on the 
 
 Conclusion
 The Shop App provides a complete and easy-to-use solution for managing a shop and cart functionality. With Flutter and Firebase as a backend, this app is scalable and customizable to meet the needs of any online shop.
+
