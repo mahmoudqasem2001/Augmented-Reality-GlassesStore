@@ -31,7 +31,7 @@ class UserProductsScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(),
+      drawer:const AppDrawer(),
       body: FutureBuilder(
         future: _refreshProducts(context),
         builder: (ctx, AsyncSnapshot snapshot) =>

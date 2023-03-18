@@ -10,9 +10,9 @@ class ProductDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productId = ModalRoute.of(context)!.settings.arguments !;
-    final loadedProduct =
-        Provider.of<Products>(context, listen: false).findById(productId as String);
+    final productId = ModalRoute.of(context)!.settings.arguments!;
+    final loadedProduct = Provider.of<Products>(context, listen: false)
+        .findById(productId as String);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -20,11 +20,11 @@ class ProductDetailScreen extends StatelessWidget {
             expandedHeight: 300,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(loadedProduct.title !),
+              title: Text(loadedProduct.title!),
               background: Hero(
-                tag: loadedProduct.id !,
+                tag: loadedProduct.id!,
                 child: Image.network(
-                  loadedProduct.imageUrl !,
+                  loadedProduct.imageUrl!,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -32,18 +32,18 @@ class ProductDetailScreen extends StatelessWidget {
           ),
           SliverList(
             delegate: SliverChildListDelegate([
-             const SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 '\$${loadedProduct.price}',
                 textAlign: TextAlign.center,
-                style:const TextStyle(
+                style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 20,
                 ),
               ),
-             const SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(

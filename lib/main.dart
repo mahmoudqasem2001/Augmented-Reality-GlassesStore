@@ -7,7 +7,6 @@ import 'package:shop_app/providers/products.dart';
 import 'package:shop_app/screens/auth_screen.dart';
 import 'package:shop_app/screens/cart_screen.dart';
 import 'package:shop_app/screens/edit_product_screen.dart';
-import 'package:shop_app/screens/introduction_screen.dart';
 import 'package:shop_app/screens/orders_screen.dart';
 import 'package:shop_app/screens/product_detail_screen.dart';
 import 'package:shop_app/screens/product_overview_screen.dart';
@@ -60,7 +59,7 @@ class MyApp extends StatelessWidget {
                   future: auth.tryAutoLogin(),
                   builder: (context, auhtSnapshot) =>
                       auhtSnapshot.connectionState == ConnectionState.waiting
-                          ? SplashScreen()
+                          ?const SplashScreen()
                           : const AuthScreen()),
           routes: {
             ProductDetailScreen.routeName: (_) => const ProductDetailScreen(),

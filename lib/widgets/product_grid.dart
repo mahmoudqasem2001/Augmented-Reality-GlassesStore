@@ -7,7 +7,7 @@ import '../providers/products.dart';
 class ProductsGrid extends StatelessWidget {
   final bool showFavs;
 
-  const ProductsGrid(this.showFavs);
+  const ProductsGrid(this.showFavs, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class ProductsGrid extends StatelessWidget {
             // wil listen to every change on his data
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: products[i],
-              child: ProductItem(),
+              child:const ProductItem(),
             ),
             gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,

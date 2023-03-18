@@ -38,7 +38,7 @@ class IntroScreen extends StatelessWidget {
               future: auth.tryAutoLogin(),
               builder: (context, auhtSnapshot) =>
                   auhtSnapshot.connectionState == ConnectionState.waiting
-                      ? SplashScreen()
+                      ?const SplashScreen()
                       : IntroScreenOnboarding(
                           introductionList: list,
                           onTapSkipButton: () {
