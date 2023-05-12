@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class Badge extends StatelessWidget {
   final Widget child;
   final String value;
@@ -16,22 +15,22 @@ class Badge extends StatelessWidget {
       children: [
         child,
         Positioned(
-          right: 8,
-          top: 8,
+          right: 2,
+          top: 0,
           child: Container(
-            padding:const EdgeInsets.all(2.0),
+            padding: const EdgeInsets.all(2.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              color: color ?? Theme.of(context).colorScheme.secondary,
+              color: Colors.white,
             ),
-            constraints:const BoxConstraints(
-              minHeight: 16,
-              minWidth: 16,
+            constraints: const BoxConstraints(
+              minHeight: 12,
+              minWidth: 12,
             ),
             child: Text(
               value,
               textAlign: TextAlign.center,
-              style:const TextStyle(
+              style: const TextStyle(
                 fontSize: 10,
               ),
             ),

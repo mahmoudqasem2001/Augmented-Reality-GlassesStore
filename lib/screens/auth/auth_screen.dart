@@ -3,7 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth.dart';
+import 'package:shop_app/screens/home/product_overview_screen.dart';
+import '../../providers/auth.dart';
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
@@ -74,7 +75,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Flexible(
                     flex: deviceSize.width > 600 ? 2 : 1,
-                    child:const AuthCard(),
+                    child: const AuthCard(),
                   ),
                 ],
               ),
@@ -220,13 +221,13 @@ class _AuthCardState extends State<AuthCard>
       ),
       elevation: 0.8,
       child: AnimatedContainer(
-        duration:const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeIn,
         height: _authMode == AuthMode.signUp ? 320 : 260,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.signUp ? 320 : 260),
         width: deviceSize.width * 0.75,
-        padding:const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -300,12 +301,14 @@ class _AuthCardState extends State<AuthCard>
                 MaterialButton(
                   child: Text(_authMode == AuthMode.login ? 'LOGIN' : 'SIGNUP'),
                   onPressed: () {
-                    _submit();
+                    // _submit();
+                    Navigator.of(context).pushNamed(ProductOverViewScreen.routeName);
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  padding:const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                   color: Colors.blueGrey,
                   textColor:
                       Theme.of(context).primaryTextTheme.titleLarge?.color,
@@ -317,7 +320,8 @@ class _AuthCardState extends State<AuthCard>
                   _switchAuthMode();
                 },
                 style: TextButton.styleFrom(
-                  padding:const EdgeInsets.symmetric(horizontal: 30, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 4),
                   textStyle: TextStyle(
                     color: Theme.of(context).primaryColor,
                   ),

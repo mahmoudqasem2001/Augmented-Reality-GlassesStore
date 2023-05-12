@@ -28,11 +28,19 @@ dependencies:
   intl: ^0.18.0
   http: ^0.13.5
   shared_preferences: ^2.0.18
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
 
 
   cupertino_icons: ^1.0.5
   intro_screen_onboarding_flutter: ^1.0.0
+  curved_navigation_bar: ^1.0.3
+  clippy_flutter: ^2.0.0-nullsafety.1
+  flutter_rating_bar: ^4.0.1
+  flutter_image_slideshow: ^0.1.5
+  flutter_zoom_drawer: ^3.0.4+1
+  carousel_slider: ^4.2.1
+  dropdown_search: ^5.0.6
+  intl_phone_field: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -41,10 +49,18 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/product-placeholder.png
+    - assets/images/product-placeholder.jpg
     - assets/images/onboarding1.png
     - assets/images/onboarding2.png
     - assets/images/onboarding3.png
+    - assets/images/Capture.PNG
+    - assets/images/profile.png
+    - assets/images/images_slider/image1.jpg
+    - assets/images/images_slider/image2.jpg
+    - assets/images/images_slider/image3.jpg
+    - assets/images/images_slider/image4.jpg
+    - assets/images/profile_mask.png
+    - assets/images/login_success.png
 
   fonts:
     - family: Lato

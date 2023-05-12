@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intro_screen_onboarding_flutter/introduction.dart';
 import 'package:intro_screen_onboarding_flutter/introscreenonboarding.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/screens/auth_screen.dart';
+import 'package:shop_app/screens/auth/auth_screen.dart';
 
 import '../providers/auth.dart';
-import 'product_overview_screen.dart';
+import 'home/product_overview_screen.dart';
 import 'splash_screen.dart';
 
 class IntroScreen extends StatelessWidget {

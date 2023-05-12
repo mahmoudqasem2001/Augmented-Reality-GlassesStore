@@ -22,7 +22,7 @@ class Auth with ChangeNotifier {
         _token != null) {
       return _token;
     }
-    return null;
+    return '';
   }
 
   String? get userId {
