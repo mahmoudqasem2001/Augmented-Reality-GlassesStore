@@ -15,7 +15,8 @@ class ProductFilterWidget extends StatelessWidget {
     String? typeFilter;
     String? borderFilter;
     String? shapeFilter;
-
+    final showErrorMessage = Provider.of<Products>(context, listen: false);
+    final themeColor = Theme.of(context).colorScheme.secondary;
     return SizedBox(
       height: 1200,
       child: ListView(
@@ -37,7 +38,9 @@ class ProductFilterWidget extends StatelessWidget {
             ],
             decoration: InputDecoration(
               labelText: 'Gender',
+            
             ),
+            dropdownColor: themeColor,
           ),
 
           // Brand filter
@@ -50,7 +53,9 @@ class ProductFilterWidget extends StatelessWidget {
               brandNameFilter = value;
             },
             items: [
-              DropdownMenuItem(value: 'ALESSIO SUNGLASSES', child: Text('ALESSIO SUNGLASSES')),
+              DropdownMenuItem(
+                  value: 'ALESSIO SUNGLASSES',
+                  child: Text('ALESSIO SUNGLASSES')),
               DropdownMenuItem(value: 'Brand 2', child: Text('Brand 2')),
             ],
             decoration: InputDecoration(
@@ -112,14 +117,29 @@ class ProductFilterWidget extends StatelessWidget {
             onPressed: () {
               GlassesFilter updatedFilter = GlassesFilter(
                 gender: genderFilter,
-                brand: Brand(name:brandNameFilter),
+                brand: Brand(name: brandNameFilter),
                 type: typeFilter,
                 border: borderFilter,
                 shape: shapeFilter,
               );
-              productFilter.updateFilter(updatedFilter);
+              if (genderFilter == null ||
+                  brandNameFilter == null ||
+                  typeFilter == null ||
+                  borderFilter == null ||
+                  shapeFilter == null) {
+                showErrorMessage.showErrorFilterMessage(true);
+              } else {
+                productFilter.updateFilter(updatedFilter);
+                showErrorMessage.showErrorFilterMessage(false);
+              }
             },
             child: Text('Apply Filter'),
+          ),
+          Text(
+            !showErrorMessage.showErrorFilterMessage
+                ? 'please select all filters'
+                : '',
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ],
       ),

@@ -3,10 +3,10 @@ import 'dart:convert';
 
 
 class Address {
- final String? country;
- final String? city;
- final String? street;
- final String? zip;
+  String? country;
+  String? city;
+  String? street;
+  String? zip;
 
 
  Address({this.country, this.city, this.street, this.zip});

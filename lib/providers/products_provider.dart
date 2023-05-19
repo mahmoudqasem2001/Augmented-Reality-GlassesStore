@@ -144,6 +144,15 @@ class Products with ChangeNotifier {
     return _product;
   }
 
+  var _showErrorFilterMessage = false;
+
+  get showErrorFilterMessage => _showErrorFilterMessage;
+
+  void setShowErrorFilterMessage(var showErrorMessage) {
+    _showErrorFilterMessage = showErrorMessage;
+    notifyListeners();
+  }
+
   String _dropdownValue = 'Lowest Price';
 
   var _productQuantity = 0;
