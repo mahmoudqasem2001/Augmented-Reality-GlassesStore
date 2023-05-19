@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/account.dart';
-import 'package:shop_app/providers/store.dart';
+import 'package:shop_app/models/store.dart';
 
 class Stores with ChangeNotifier {
   final List<Store> _stores = [
@@ -45,6 +45,13 @@ class Stores with ChangeNotifier {
           Account(email: 'mahmoodqasim543@gmail.com', password: '123456789'),
     ),
   ];
+
+  final Store _store = Store();
+
+  get store {
+    return _store;
+  }
+
   List<Store> get stores {
     return _stores;
   }
