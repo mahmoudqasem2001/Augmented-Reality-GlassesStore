@@ -10,7 +10,7 @@ class Products with ChangeNotifier {
   List<Product> _items = [
     Product(
       id: 'p1',
-      brand:Brand(id:1,name: 'ALESSIO SUNGLASSES',countryOfOrigin: 'jenin') ,
+      brand: Brand(id: 1, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
       model: 'Fx-193',
       price: 29.99,
       imageUrls: [
@@ -19,16 +19,16 @@ class Products with ChangeNotifier {
         'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
         'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
       ],
-      colors: ['Black'],
+      color: 'Black',
       type: 'SunGlasses',
-      gender: 'Male',
+      gender: 'Men',
       store: 'ALKHALDY',
       border: 'thin',
       shape: 'circle',
     ),
     Product(
       id: 'p2',
-      brand:Brand(id: 2,name: 'ALESSIO SUNGLASSES',countryOfOrigin: 'jenin') ,
+      brand: Brand(id: 2, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
       model: 'Fx-193',
       price: 22.99,
       imageUrls: [
@@ -37,16 +37,16 @@ class Products with ChangeNotifier {
         'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
         'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
       ],
-      colors: ['Brown'],
+      color: 'Brown',
       type: 'SunGlasses',
-      gender: 'Male',
+      gender: 'Men',
       store: 'ALKHALDY',
       border: 'thin',
-      shape: 'circle',
+      shape: 'Circular',
     ),
     Product(
       id: 'p3',
-      brand:Brand(id: 3,name: 'ALESSIO SUNGLASSES',countryOfOrigin: 'jenin') ,
+      brand: Brand(id: 3, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
       model: 'Fx-193',
       price: 34.99,
       imageUrls: [
@@ -55,16 +55,16 @@ class Products with ChangeNotifier {
         'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
         'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
       ],
-      colors: ['Black'],
+      color: 'Black',
       type: 'SunGlasses',
       gender: 'Female',
       store: 'SHAMS',
       border: 'thin',
-      shape: 'circle',
+      shape: 'Circular',
     ),
     Product(
       id: 'p4',
-      brand:Brand(id: 4,name: 'ALESSIO SUNGLASSES',countryOfOrigin: 'jenin') ,
+      brand: Brand(id: 4, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
       model: 'Fx-193',
       price: 20.99,
       imageUrls: [
@@ -73,16 +73,16 @@ class Products with ChangeNotifier {
         'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
         'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
       ],
-      colors: ['Black'],
+      color: 'Black',
       type: 'SunGlasses',
       gender: 'Male',
       store: 'TWEEN',
       border: 'thin',
-      shape: 'circle',
+      shape: 'Circular',
     ),
     Product(
       id: 'p6',
-      brand:Brand(id: 5,name: 'ALESSIO SUNGLASSES',countryOfOrigin: 'jenin') ,
+      brand: Brand(id: 5, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
       model: 'Fx-193',
       price: 41.99,
       imageUrls: [
@@ -91,7 +91,7 @@ class Products with ChangeNotifier {
         'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
         'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
       ],
-      colors: ['Black'],
+      color: 'Black',
       type: 'SunGlasses',
       gender: 'Female',
       store: 'TWEEN',
@@ -100,7 +100,7 @@ class Products with ChangeNotifier {
     ),
     Product(
       id: 'p5',
-      brand:Brand(id: 6,name: 'ALESSIO SUNGLASSES',countryOfOrigin: 'jenin') ,
+      brand: Brand(id: 6, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
       model: 'Fx-193',
       price: 39.99,
       imageUrls: [
@@ -109,7 +109,7 @@ class Products with ChangeNotifier {
         'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
         'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
       ],
-      colors: ['Black'],
+      color: 'Black',
       type: 'SunGlasses',
       gender: 'Male',
       store: 'QUEEN',
@@ -118,7 +118,7 @@ class Products with ChangeNotifier {
     ),
     Product(
       id: 'p7',
-      brand:Brand(id: 7,name: 'ALESSIO SUNGLASSES',countryOfOrigin: 'jenin') ,
+      brand: Brand(id: 7, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
       model: 'Fx-193',
       price: 16.99,
       imageUrls: [
@@ -127,7 +127,7 @@ class Products with ChangeNotifier {
         'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
         'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
       ],
-      colors: ['Black'],
+      color: 'Black',
       type: 'SunGlasses',
       gender: 'Female',
       store: 'QUEEN',
@@ -135,10 +135,10 @@ class Products with ChangeNotifier {
       shape: 'circle',
     ),
   ];
-GlassesFilter _currentFilter = GlassesFilter();
+  GlassesFilter _currentFilter = GlassesFilter();
 
   GlassesFilter get currentFilter => _currentFilter;
- final Product _product = Product();
+  final Product _product = Product();
 
   get product {
     return _product;
@@ -152,14 +152,10 @@ GlassesFilter _currentFilter = GlassesFilter();
     return _productQuantity;
   }
 
-  
-
   void setProductQuantity(var count) {
     _productQuantity = count;
     notifyListeners();
   }
-
-  
 
   get dropdownValue {
     return _dropdownValue;
@@ -176,11 +172,23 @@ GlassesFilter _currentFilter = GlassesFilter();
     return _showAttributes;
   }
 
-  
+  void updateFilter(GlassesFilter newFilter) {
+    final filteredList;
 
+    filteredList = _items
+        .where((product) =>
+            identical(newFilter.border, product.border) &&
+            identical(newFilter.gender, product.gender) &&
+            identical(newFilter.type, product.type) &&
+            identical(newFilter.shape, product.shape) &&
+            identical(newFilter.brand?.name, product.brand?.name))
+        .toList();
 
-void updateFilter(GlassesFilter newFilter) {
-    
+    // print(filteredList.length);
+    // for (var i = 0; i < filteredList.length; i++) {
+    //   print(filteredList.elementAt(i).id);
+    // }
+    _items = filteredList;
     notifyListeners();
   }
   // void _setFavValue(bool newValue) {
@@ -238,10 +246,9 @@ void updateFilter(GlassesFilter newFilter) {
     return _items;
   }
 
-  
-
   Product findById(String? id) {
-    return _items.firstWhere((prod) => prod.id == id!);
+    Product foundedProduct = _items.firstWhere((prod) => prod.id == id!);
+    return foundedProduct;
   }
 
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
@@ -273,7 +280,7 @@ void updateFilter(GlassesFilter newFilter) {
           price: prodData['price'],
           imageUrls: prodData['imageUrls'],
           border: '',
-          colors: [''],
+          color: '',
           gender: '',
           shape: '',
           store: '',

@@ -1,6 +1,8 @@
+import 'brand.dart';
+
 class GlassesFilter {
   String? gender;
-  String? brand;
+  Brand? brand;
   String? type;
   String? border;
   String? shape;

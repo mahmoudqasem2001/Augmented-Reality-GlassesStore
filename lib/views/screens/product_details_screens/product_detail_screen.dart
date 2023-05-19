@@ -42,6 +42,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
         .findById(productId as String);
+    
     final cart = Provider.of<Cart>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,

@@ -41,7 +41,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     model: '',
     price: 0,
     imageUrls: [''],
-    colors: [''],
+    color: '',
     type: '',
     gender: '',
     store: '',

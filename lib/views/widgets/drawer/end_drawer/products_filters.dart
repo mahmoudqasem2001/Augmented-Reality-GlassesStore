@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/models/brand.dart';
 import 'package:shop_app/providers/products_provider.dart';
 import '../../../../models/glasses_filter.dart';
 
@@ -10,7 +11,7 @@ class ProductFilterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final productFilter = Provider.of<Products>(context, listen: false);
     String? genderFilter;
-    String? brandFilter;
+    String? brandNameFilter;
     String? typeFilter;
     String? borderFilter;
     String? shapeFilter;
@@ -41,15 +42,15 @@ class ProductFilterWidget extends StatelessWidget {
 
           // Brand filter
           DropdownButtonFormField<String>(
-            value: productFilter.currentFilter.brand,
+            value: productFilter.currentFilter.brand?.name,
             onChanged: (value) {
               // final newFilter =
               //     productFilter.currentFilter.copyWith(brand: value);
               // productFilter.updateFilter(newFilter);
-              brandFilter = value;
+              brandNameFilter = value;
             },
             items: [
-              DropdownMenuItem(value: 'Brand 1', child: Text('Brand 1')),
+              DropdownMenuItem(value: 'ALESSIO SUNGLASSES', child: Text('ALESSIO SUNGLASSES')),
               DropdownMenuItem(value: 'Brand 2', child: Text('Brand 2')),
             ],
             decoration: InputDecoration(
@@ -67,7 +68,7 @@ class ProductFilterWidget extends StatelessWidget {
               typeFilter = value;
             },
             items: [
-              DropdownMenuItem(value: 'Type 1', child: Text('Type 1')),
+              DropdownMenuItem(value: 'SunGlasses', child: Text('SunGlasses')),
               DropdownMenuItem(value: 'Type 2', child: Text('Type 2')),
             ],
             decoration: InputDecoration(
@@ -83,7 +84,7 @@ class ProductFilterWidget extends StatelessWidget {
               borderFilter = value;
             },
             items: [
-              DropdownMenuItem(value: 'Thin', child: Text('Thin')),
+              DropdownMenuItem(value: 'thin', child: Text('thin')),
               DropdownMenuItem(value: 'bold', child: Text('bold')),
             ],
             decoration: InputDecoration(
@@ -111,7 +112,7 @@ class ProductFilterWidget extends StatelessWidget {
             onPressed: () {
               GlassesFilter updatedFilter = GlassesFilter(
                 gender: genderFilter,
-                brand: brandFilter,
+                brand: Brand(name:brandNameFilter),
                 type: typeFilter,
                 border: borderFilter,
                 shape: shapeFilter,
