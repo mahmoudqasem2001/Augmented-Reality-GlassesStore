@@ -16,7 +16,6 @@ class ItemBottomNavBar extends StatelessWidget {
     var quantity = Provider.of<Products>(context, listen: false);
     return BottomAppBar(
       child: Container(
-        height: 80,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
@@ -48,10 +47,10 @@ class ItemBottomNavBar extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      const Icon(Icons.camera_alt)
+                      // const SizedBox(
+                      //   height: 0,
+                      // ),
+                      // const Icon(Icons.camera_alt)
                     ],
                   ),
                 ),
@@ -71,7 +70,7 @@ class ItemBottomNavBar extends StatelessWidget {
                         loadedProduct.brand!.name!, quantity.productQuantity);
                     quantity.setProductQuantity(0);
                   },
-                  child: const Column(
+                  child: Column(
                     children: [
                       Text(
                         'Add To Cart',
@@ -80,13 +79,6 @@ class ItemBottomNavBar extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Icon(
-                        CupertinoIcons.cart_badge_plus,
-                        color: Colors.white,
                       ),
                     ],
                   ),
