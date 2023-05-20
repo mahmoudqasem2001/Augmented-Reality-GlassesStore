@@ -6,10 +6,10 @@ import 'package:shop_app/views/widgets/drawer/app_drawer/app_drawer.dart';
 
 import '../../widgets/manage_products_widgets/user_product_item.dart';
 
-class UserProductsScreen extends StatelessWidget {
+class ManageProductsScreen extends StatelessWidget {
   static const routeName = '/user-products';
 
-  const UserProductsScreen({Key? key}) : super(key: key);
+  const ManageProductsScreen({Key? key}) : super(key: key);
 
   Future<void> _refreshProducts(BuildContext context) async {
     await Provider.of<Products>(context, listen: false)
@@ -19,6 +19,7 @@ class UserProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: const Text("Your Products"),
         actions: [
@@ -31,7 +32,7 @@ class UserProductsScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer:const AppDrawer(),
+      drawer: const AppDrawer(),
       body: FutureBuilder(
         future: _refreshProducts(context),
         builder: (ctx, AsyncSnapshot snapshot) =>

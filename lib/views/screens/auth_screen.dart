@@ -103,6 +103,7 @@ class _AuthCardState extends State<AuthCard>
   final Map<String, String> _authData = {
     'email': '',
     'password': '',
+    'userType':''
   };
 
   var _isLoading = false;
@@ -154,7 +155,7 @@ class _AuthCardState extends State<AuthCard>
             .login(_authData['email']!, _authData['password']!);
       } else {
         await Provider.of<Auth>(context, listen: false)
-            .signUp(_authData['email']!, _authData['password']!);
+            .signUp(_authData['email']!, _authData['password']!, _authData['userType']!);
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/brand.dart';
 import 'package:shop_app/providers/products_provider.dart';
 import '../../../../models/glasses_filter.dart';
+import '../../../screens/home_screens/home_screen.dart';
 
 class ProductFilterWidget extends StatelessWidget {
   const ProductFilterWidget({Key? key}) : super(key: key);
@@ -38,7 +39,6 @@ class ProductFilterWidget extends StatelessWidget {
             ],
             decoration: InputDecoration(
               labelText: 'Gender',
-            
             ),
             dropdownColor: themeColor,
           ),

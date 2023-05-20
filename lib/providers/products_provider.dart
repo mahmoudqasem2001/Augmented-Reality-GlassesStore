@@ -366,4 +366,39 @@ class Products with ChangeNotifier {
     }
     existingProduct = null;
   }
+  ////////////////////////////////////////////
+  List<Product> _products = [];
+
+  List<Product> get products => _products;
+
+Future<void> fetchProducts() async {
+    try {
+     final apiUrl=Uri.parse("https://ar-store-production.up.railway.app/api/glasses");
+      // Make an HTTP request to fetch the products from your API
+      final response = await http.get(apiUrl);
+
+      if (response.statusCode == 200) {
+        // Parse the response body and convert it to a list of products
+        final List<dynamic> responseData = json.decode(response.body);
+        _products = responseData.map((data) => Product.fromMap(data)).toList();
+
+        notifyListeners(); // Notify listeners that the state has changed
+      } else {
+        // Handle error response
+        print('Failed to fetch products. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print('Failed to fetch products: $error');
+    }
+  }
+
+
+
+
+
+
+
+
+
 }

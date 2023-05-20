@@ -4,8 +4,11 @@ import 'package:shop_app/providers/home_provider.dart';
 import '../../widgets/login_widgets/signin_form.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({Key? key}) : super(key: key);
   static const routeName = '/login';
+
+  
+
   @override
   Widget build(BuildContext context) {
     var home = Provider.of<Home>(context, listen: false);

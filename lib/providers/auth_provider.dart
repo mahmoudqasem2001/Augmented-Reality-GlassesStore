@@ -12,10 +12,8 @@ class Auth with ChangeNotifier {
   String? _userId;
   Timer? _auhtTimer;
 
-
-
   bool get isAuth {
-    return token!= null;
+    return token != null;
   }
 
   String? get token {
@@ -31,35 +29,33 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
-
-  Future<void> _authenticate(
-      String email, String password, String urlSegment) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyAMA7FZYcD7fKDKqOBlEEPu-yIDC4kdM3M';
+  Future<void> _authenticateRegistration(
+      String email, String password,String? userType,String urlSegment,  ) async {
+    final url = 'https://ar-store-production.up.railway.app/api/auth/${urlSegment}';
     try {
       final res = await http.post(Uri.parse(url),
           body: json.encode({
             'email': email,
             'password': password,
-            'returnSecureToken': true,
+            'userType': userType,
           }));
       final responseDate = json.decode(res.body);
       if (responseDate['error'] != null) {
         throw HttpException(responseDate['error']['message']);
       }
-      _token = responseDate['idToken'];
-      _userId = responseDate['localId'];
-      _expiryDate = DateTime.now()
-          .add(Duration(seconds: int.parse(responseDate['expiresIn'])));
+      _token = responseDate['token'];
+     // _userId = responseDate['localId'];
+      // _expiryDate = DateTime.now()
+      //     .add(Duration(seconds: int.parse(responseDate['expiresIn'])));
 
-      _autoLogout();
+      // _autoLogout();
       notifyListeners();
 
       final prefs = await SharedPreferences.getInstance();
       String userData = json.encode({
         'token': _token,
-        'userId': _userId,
-        'expiryDate': _expiryDate!.toIso8601String(),
+        // 'userId': _userId,
+        // 'expiryDate': _expiryDate!.toIso8601String(),
       });
       prefs.setString('userData', userData);
     } catch (e) {
@@ -67,12 +63,45 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> signUp(String email, String password) async {
-    return _authenticate(email, password, "signUp");
+
+Future<void> _authenticateLogin(
+      String email, String password,String urlSegment) async {
+    final url = 'https://ar-store-production.up.railway.app/api/auth/${urlSegment}';
+    try {
+      final res = await http.post(Uri.parse(url),
+          body: json.encode({
+            'email': email,
+            'password': password,
+          }));
+      final responseDate = json.decode(res.body);
+      if (responseDate['error'] != null) {
+        throw HttpException(responseDate['error']['message']);
+      }
+      _token = responseDate['token'];
+     // _userId = responseDate['localId'];
+      // _expiryDate = DateTime.now()
+      //     .add(Duration(seconds: int.parse(responseDate['expiresIn'])));
+
+      // _autoLogout();
+      notifyListeners();
+
+      final prefs = await SharedPreferences.getInstance();
+      String userData = json.encode({
+        'token': _token,
+        // 'userId': _userId,
+        // 'expiryDate': _expiryDate!.toIso8601String(),
+      });
+      prefs.setString('userData', userData);
+    } catch (e) {
+      rethrow;
+    }
+  }
+  Future<void> signUp(String email, String password,String userType) async {
+    return _authenticateRegistration(email, password,userType, "signUp" );
   }
 
   Future<void> login(String email, String password) async {
-    return _authenticate(email, password, "signInWithPassword");
+    return _authenticateLogin(email, password, "login");
   }
 
   Future<bool> tryAutoLogin() async {
@@ -99,7 +128,7 @@ class Auth with ChangeNotifier {
     _token = null;
     _userId = null;
     _expiryDate = null;
-    if (_auhtTimer !=null) {
+    if (_auhtTimer != null) {
       _auhtTimer!.cancel();
 
       _auhtTimer = null;

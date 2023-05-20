@@ -1,10 +1,12 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/home_provider.dart';
 import 'package:shop_app/views/widgets/signup_widgets/signup_form.dart';
 
+
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  SignUpScreen({Key? key}) : super(key: key);
   static const routeName = '/signUp';
 
   @override
@@ -74,4 +76,3 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 }
-

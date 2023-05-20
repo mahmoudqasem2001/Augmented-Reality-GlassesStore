@@ -20,7 +20,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _priceFocusNode = FocusNode();
 
   final _imageUrlsController = TextEditingController();
-  
 
   final _imageUrl1FocusNode = FocusNode();
   final _imageUrl2FocusNode = FocusNode();
@@ -53,7 +52,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'model': '',
     'price': '',
     'imageUrls': [''],
-    'color': [''],
+    'color': '',
     'type': '',
     'gender': '',
     'store': '',
@@ -159,6 +158,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: const Text("Edit Product"),
         actions: [
@@ -178,7 +178,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   TextFormField(
                     initialValue: _initialValues['brand'] as String?,
                     decoration: const InputDecoration(labelText: 'brand'),
-                    
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) {
                       FocusScope.of(context).requestFocus(_priceFocusNode);
@@ -192,7 +191,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     onSaved: (newValue) {
                       _editedProduct = Product(
                           id: _editedProduct.id,
-                          brand:Brand(name:  newValue),
+                          brand: Brand(name: newValue),
                           model: _editedProduct.model,
                           price: _editedProduct.price,
                           imageUrls: _editedProduct.imageUrls);

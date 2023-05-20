@@ -14,7 +14,7 @@ class UserProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
     return ListTile(
-    
+    tileColor: Colors.grey[200],
       title: Text(title),
       leading: CircleAvatar(
         backgroundImage: NetworkImage(imageUrl),
@@ -24,10 +24,12 @@ class UserProductItem extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              onPressed: () => Navigator.of(context).pushNamed(
+              onPressed: () {
+                 Navigator.of(context).pushNamed(
                 EditProductScreen.routeName,
                 arguments: id,
-              ),
+              );
+              },
               icon:const Icon(Icons.edit),
             ),
             IconButton(

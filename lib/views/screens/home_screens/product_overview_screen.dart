@@ -1,11 +1,11 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/views/screens/home_screens/home_screen.dart';
 import 'package:shop_app/views/widgets/home_widgets/image_slider.dart';
 
 import '../../../providers/products_provider.dart';
 import '../../widgets/home_widgets/product_grid.dart';
-
 
 enum FilterOption { favorites, all }
 
@@ -20,7 +20,6 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   var _isLoading = false;
-  final _showOnlyFavorites = false;
   var selectedItem;
   //var _isInit= false;
 
@@ -29,12 +28,12 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
     super.initState();
     _isLoading = true;
     Provider.of<Products>(context, listen: false)
-        .fetchAndSetProducts()
+        .fetchProducts()
         .then(
           (_) => setState(() => _isLoading = false),
         )
         .catchError((_) => setState(
-              () => _isLoading = false,
+              () => _isLoading = true,
             ));
   }
 
@@ -52,31 +51,6 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
             right: 16,
           ),
           child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            // Container(
-            //   padding: const EdgeInsets.symmetric(horizontal: 30),
-            //   child: Consumer<Products>(
-            //     builder: (_, prds, ch) => DropdownButton<String>(
-            //       value: products.dropdownValue,
-            //       onChanged: (String? newValue) {
-            //         prds.sortByPrice(newValue);
-            //        setState(() {
-
-            //        });
-            //       },
-            //       items: <String>['Lowest Price', 'Highest Price']
-            //           .map<DropdownMenuItem<String>>((String value) {
-            //         return DropdownMenuItem<String>(
-            //           value: value,
-            //           child: Text(value),
-            //         );
-            //       }).toList(),
-            //       style:
-            //           TextStyle(color: Theme.of(context).colorScheme.primary),
-            //       borderRadius: BorderRadius.circular(12),
-            //     ),
-            //   ),
-            // ),
-
             Padding(
               padding: const EdgeInsets.only(left: 25),
               child: SizedBox(
@@ -99,6 +73,8 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
                   ),
                   onChanged: (String? newValue) {
                     products.sortByPrice(newValue);
+                    Navigator.pushNamed(
+                        context, HomeScreen.routeName);
                   },
                   selectedItem: selectedItem,
                 ),

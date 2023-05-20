@@ -17,7 +17,6 @@ class _ProductsGridState extends State<ProductsGrid> {
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context, listen: false);
-    // final products = showFavs ? productsData.favoriteItems : productsData.items;
     return Consumer<Products>(builder: (_, products, ch) {
       prods = products.items;
       for (var i = 0; i < prods.length; i++) {

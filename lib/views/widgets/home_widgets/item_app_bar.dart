@@ -36,16 +36,6 @@ class ItemAppBar extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          IconButton(
-            onPressed: () {
-              //product.toggleFavoriteStatus(authData.token!, authData.userId!);
-            },
-            icon: const Icon(
-              Icons.favorite,
-              color: Colors.red,
-              size: 30,
-            ),
-          ),
         ],
       ),
     );
