@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/home_provider.dart';
-import 'package:shop_app/views/widgets/signup_widgets/signup_form.dart';
+import 'package:shop_app/views/widgets/signup_widgets/customer_signup_form.dart';
 
 
-class SignUpScreen extends StatelessWidget {
-  SignUpScreen({Key? key}) : super(key: key);
-  static const routeName = '/signUp';
+class CustomerSignUpScreen extends StatelessWidget {
+  CustomerSignUpScreen({Key? key}) : super(key: key);
+  static const routeName = '/customer_signUp';
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class SignUpScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: const Text(
-          'Sign Up',
+          'Customer Sign Up',
           style: TextStyle(
             color: Colors.black,
           ),
@@ -68,7 +68,7 @@ class SignUpScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: 20,
               ),
-              child: SignUpForm(),
+              child: CustomerSignUpForm(),
             ),
           ],
         ),

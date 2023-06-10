@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants.dart';
-import '../../../providers/auth_provider.dart';
+import '../../../providers/auth.dart';
 import '../../screens/login_screens/login_success_screen.dart';
 import '../auth_common_widgets/form_error.dart';
 
@@ -16,15 +15,10 @@ class SignForm extends StatefulWidget {
 class _SignFormState extends State<SignForm> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
-
-  String email = '';
+  final _emailController = TextEditingController();
   String password = '';
   final List<String> errors = [];
 
-  final Map<String, String> _authData = {
-    'email': '',
-    'password': '',
-  };
   var _isLoading = false;
 
   Future<void> _submit() async {
@@ -34,13 +28,20 @@ class _SignFormState extends State<SignForm> {
     FocusScope.of(context).unfocus();
     _formKey.currentState!.save();
 
-    setState(() {
-      _isLoading = true;
-    });
+    Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
 
     try {
-      await Provider.of<Auth>(context, listen: false)
-          .login(_authData['email']!, _authData['password']!);
+      bool authenticated = await Provider.of<Auth>(context, listen: false)
+          .login(
+              email: _emailController.text, password: _passwordController.text);
+      //Provider.of<Auth>(context, listen: false).setAuthentucated(authenticated);
+
+      if (authenticated == true) {
+        Navigator.of(context)
+            .pushReplacementNamed(LoginSuccessScreen.routeName);
+      } else {
+        print('something wrong');
+      }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXIST')) {
@@ -60,9 +61,7 @@ class _SignFormState extends State<SignForm> {
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
     }
-    setState(() {
-      _isLoading = false;
-    });
+    Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
   }
 
   void _showErrorDialog(String errorMessage) {
@@ -82,7 +81,6 @@ class _SignFormState extends State<SignForm> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Auth>(context, listen: false);
     return Form(
       key: _formKey,
       child: Column(
@@ -120,30 +118,12 @@ class _SignFormState extends State<SignForm> {
         suffixIcon: const Icon(Icons.mail),
       ),
       keyboardType: TextInputType.emailAddress,
-      onSaved: (newValue) => email = newValue!,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kEmailNullError)) {
-          setState(() {
-            errors.remove(kEmailNullError);
-          });
-        } else if (emailValidatorRegExp.hasMatch(value) &&
-            errors.contains(kEmailInvalidError)) {
-          setState(() {
-            errors.remove(kEmailInvalidError);
-          });
-        }
-        return;
-      },
+      controller: _emailController,
       validator: (value) {
-        if (value!.isEmpty && !errors.contains(kEmailNullError)) {
-          setState(() {
-            errors.add(kEmailNullError);
-          });
-        } else if (!emailValidatorRegExp.hasMatch(value) &&
-            !errors.contains(kEmailInvalidError)) {
-          setState(() {
-            errors.add(kEmailInvalidError);
-          });
+        if (value!.isEmpty) {
+          return "Email must not be empty";
+        } else if (!value.contains('@')) {
+          return "Please enter a valid email";
         }
         return null;
       },
@@ -173,28 +153,11 @@ class _SignFormState extends State<SignForm> {
         ),
       ),
       keyboardType: TextInputType.visiblePassword,
-      onSaved: (newValue) => password != newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kPassNullError)) {
-          setState(() {
-            errors.remove(kPassNullError);
-          });
-        } else if (value.length >= 8 && errors.contains(kShortPassError)) {
-          setState(() {
-            errors.remove(kShortPassError);
-          });
-        }
-        return;
-      },
       validator: (value) {
-        if (value!.isEmpty && !errors.contains(kPassNullError)) {
-          setState(() {
-            errors.add(kPassNullError);
-          });
-        } else if (value.length < 8 && !errors.contains(kShortPassError)) {
-          setState(() {
-            errors.add(kShortPassError);
-          });
+        if (value!.isEmpty) {
+          return "Password must not be empty";
+        } else if (value.length < 8) {
+          return "Password must be more than 7 charactars";
         }
         return null;
       },
@@ -212,14 +175,19 @@ class _SignFormState extends State<SignForm> {
               _formKey.currentState!.save();
             }
             _submit();
-            Navigator.of(context).pushNamed(LoginSuccessScreen.routeName);
           },
           minWidth: 200,
           height: 50,
           color: Colors.black,
-          child: const Text(
-            'Continue',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+          child: Consumer<Auth>(
+            builder: (_, auth, child) {
+              return auth.isLoading
+                  ? CircularProgressIndicator(color: Colors.white,)
+                  : const Text(
+                      'Continue',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    );
+            },
           ),
         ),
       ),

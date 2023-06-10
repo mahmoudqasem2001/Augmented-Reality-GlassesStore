@@ -2,163 +2,38 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/models/store.dart';
 import '../models/brand.dart';
-import '../models/product.dart';
 import '../models/glasses_filter.dart';
+import '../shared/constants/constants.dart';
+import 'product_provider.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _items = [
-    Product(
-      id: 'p1',
-      brand: Brand(id: 1, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
-      model: 'Fx-193',
-      price: 29.99,
-      imageUrls: [
-        'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__fr.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-      ],
-      color: 'Black',
-      type: 'SunGlasses',
-      gender: 'Men',
-      store: 'ALKHALDY',
-      border: 'thin',
-      shape: 'circle',
-    ),
-    Product(
-      id: 'p2',
-      brand: Brand(id: 2, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
-      model: 'Fx-193',
-      price: 22.99,
-      imageUrls: [
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__fr.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-      ],
-      color: 'Brown',
-      type: 'SunGlasses',
-      gender: 'Men',
-      store: 'ALKHALDY',
-      border: 'thin',
-      shape: 'Circular',
-    ),
-    Product(
-      id: 'p3',
-      brand: Brand(id: 3, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
-      model: 'Fx-193',
-      price: 34.99,
-      imageUrls: [
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__fr.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-      ],
-      color: 'Black',
-      type: 'SunGlasses',
-      gender: 'Female',
-      store: 'SHAMS',
-      border: 'thin',
-      shape: 'Circular',
-    ),
-    Product(
-      id: 'p4',
-      brand: Brand(id: 4, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
-      model: 'Fx-193',
-      price: 20.99,
-      imageUrls: [
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__fr.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-      ],
-      color: 'Black',
-      type: 'SunGlasses',
-      gender: 'Male',
-      store: 'TWEEN',
-      border: 'thin',
-      shape: 'Circular',
-    ),
-    Product(
-      id: 'p6',
-      brand: Brand(id: 5, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
-      model: 'Fx-193',
-      price: 41.99,
-      imageUrls: [
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__fr.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597469036__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-      ],
-      color: 'Black',
-      type: 'SunGlasses',
-      gender: 'Female',
-      store: 'TWEEN',
-      border: 'thin',
-      shape: 'circle',
-    ),
-    Product(
-      id: 'p5',
-      brand: Brand(id: 6, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
-      model: 'Fx-193',
-      price: 39.99,
-      imageUrls: [
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__fr.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-      ],
-      color: 'Black',
-      type: 'SunGlasses',
-      gender: 'Male',
-      store: 'QUEEN',
-      border: 'thin',
-      shape: 'circle',
-    ),
-    Product(
-      id: 'p7',
-      brand: Brand(id: 7, name: 'ALESSIO SUNGLASSES', countryOfOrigin: 'jenin'),
-      model: 'Fx-193',
-      price: 16.99,
-      imageUrls: [
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__fr.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__al2.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-        'https://images.ray-ban.com/is/image/RayBan/8056597755320__STD__shad__lt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2',
-      ],
-      color: 'Black',
-      type: 'SunGlasses',
-      gender: 'Female',
-      store: 'QUEEN',
-      border: 'thin',
-      shape: 'circle',
-    ),
-  ];
+  List<Product> _items = [];
+  List<Product> temp = [];
+  bool _itemsFetched = false;
+  bool _isLoadingIndicator = false;
   GlassesFilter _currentFilter = GlassesFilter();
+  String _dropdownValue = 'Lowest Price';
+  int _productQuantity = 0;
 
   GlassesFilter get currentFilter => _currentFilter;
-  final Product _product = Product();
 
-  get product {
-    return _product;
-  }
+  get isLoadingIndicator => _isLoadingIndicator;
 
-  var _showErrorFilterMessage = false;
-
-  get showErrorFilterMessage => _showErrorFilterMessage;
-
-  void setShowErrorFilterMessage(var showErrorMessage) {
-    _showErrorFilterMessage = showErrorMessage;
-    notifyListeners();
-  }
-
-  String _dropdownValue = 'Lowest Price';
-
-  var _productQuantity = 0;
+  get itemsFetched => _itemsFetched;
 
   get productQuantity {
     return _productQuantity;
+  }
+
+  get dropdownValue {
+    return _dropdownValue;
+  }
+
+  void setIsLoadingIndicator(bool isLoading) {
+    _isLoadingIndicator = isLoading;
+    notifyListeners();
   }
 
   void setProductQuantity(var count) {
@@ -166,31 +41,43 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  get dropdownValue {
-    return _dropdownValue;
-  }
-
   void setItems(List<Product> items) {
     _items = items;
     notifyListeners();
   }
 
+  List<Product> get items {
+    return _items;
+  }
+
+///////////
   bool _showAttributes = false;
 
   bool get showAttributes {
     return _showAttributes;
   }
 
-  void updateFilter(GlassesFilter newFilter) {
-    final filteredList;
+////////////////
+  ///
+  void updateFilter(String? genderFilter, String? brandNameFilter,
+      String? typeFilter, String? borderFilter, String? shapeFilter) {
+    GlassesFilter newFilter = GlassesFilter(
+      gender: genderFilter,
+      brand: Brand(name: brandNameFilter),
+      type: typeFilter,
+      border: borderFilter,
+      shape: shapeFilter,
+    );
 
+    List<Product> filteredList;
     filteredList = _items
         .where((product) =>
-            identical(newFilter.border, product.border) &&
-            identical(newFilter.gender, product.gender) &&
-            identical(newFilter.type, product.type) &&
-            identical(newFilter.shape, product.shape) &&
-            identical(newFilter.brand?.name, product.brand?.name))
+            (newFilter.border == product.border || newFilter.border == null) &&
+            (newFilter.gender == product.gender || newFilter.gender == null) &&
+            (newFilter.type == product.type || newFilter.type == null) &&
+            (newFilter.shape == product.shape || newFilter.shape == null) &&
+            (newFilter.brand?.name == product.brand?.name ||
+                newFilter.brand?.name == null))
         .toList();
 
     // print(filteredList.length);
@@ -198,30 +85,14 @@ class Products with ChangeNotifier {
     //   print(filteredList.elementAt(i).id);
     // }
     _items = filteredList;
+
     notifyListeners();
   }
-  // void _setFavValue(bool newValue) {
-  //   isFavorite = newValue;
-  //   notifyListeners();
-  // }
 
-  // Future<void> toggleFavoriteStatus(String token, String userId) async {
-  //   final oldStatus = isFavorite;
-  //   isFavorite = !isFavorite;
-  //   notifyListeners();
-
-  //   final url =
-  //       'https://shop-43d63-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
-
-  //   try {
-  //     final res = await http.put(Uri.parse(url), body: json.encode(isFavorite));
-  //     if (res.statusCode >= 400) {
-  //       _setFavValue(oldStatus);
-  //     }
-  //   } catch (e) {
-  //     _setFavValue(oldStatus);
-  //   }
-  // }
+  void clearFilters() {
+    _items = temp;
+    notifyListeners();
+  }
 
   void sortByPrice(String? newValue) {
     List<Product> sortedProd = _items;
@@ -251,57 +122,57 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Product> get items {
-    return _items;
-  }
-
-  Product findById(String? id) {
-    Product foundedProduct = _items.firstWhere((prod) => prod.id == id!);
+  Product findById(int id) {
+    Product foundedProduct = _items.firstWhere((prod) => prod.id == id);
+    // print(foundedProduct.price);
     return foundedProduct;
   }
 
-  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
-    final filteredString =
-        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
-
-    var url =
-        'https://shop-43d63-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filteredString';
-
+  Future<void> fetchAndSetProducts() async {
     try {
-      final res = await http.get(Uri.parse(url));
-      final extractedData = json.decode(res.body) as Map<String, dynamic>;
-      if (extractedData != true) {
-        return;
+      final response = await http.get(
+          Uri.parse('https://ar-store-production.up.railway.app/api/glasses'));
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as List<dynamic>;
+        //print(jsonData.length);
+        for (dynamic map in jsonData) {
+          _items.add(
+            Product(
+              id: map['id'],
+              price: map['price'] as double,
+              rating: map['rating'] as double,
+              store: Store(
+                id: map['store']['id'],
+                name: map['store']['name'],
+                phoneNumber: map['store']['phoneNumber'],
+              ),
+              brand: Brand(
+                id: map['brand']['id'],
+                name: map['brand']['name'],
+                countryOfOrigin: map['brand']['countryOfOrigin'],
+              ),
+              model: map['model'],
+              color: map['color'],
+              type: map['type'],
+              gender: map['gender'],
+              border: map['border'],
+              shape: map['shape'],
+              imageUrls: [
+                'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2'
+              ],
+            ),
+          );
+        }
+        _itemsFetched = true;
+        // print(jsonData.length);
+      } else {
+        throw Exception('Failed to fetch items');
       }
-      url =
-          'https://shop-43d63-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
-
-      final favRes = await http.get(Uri.parse(url));
-      final favData = json.decode(favRes.body);
-
-      final List<Product> loadedProducts = [];
-
-      extractedData.forEach((prodId, prodData) {
-        loadedProducts.add(Product(
-          id: prodId,
-          brand: prodData['brand'],
-          model: prodData['model'],
-          price: prodData['price'],
-          imageUrls: prodData['imageUrls'],
-          border: '',
-          color: '',
-          gender: '',
-          shape: '',
-          store: '',
-          type: '',
-        ));
-      });
-
-      _items = loadedProducts;
-      notifyListeners();
-    } catch (e) {
-      rethrow;
+    } catch (error) {
+      throw Exception('Failed to fetch items: $error');
     }
+    notifyListeners();
   }
 
   Future<void> addProduct(Product product) async {
@@ -332,7 +203,7 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> updateProduct(String id, Product newProduct) async {
+  Future<void> updateProduct(int id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url =
@@ -350,7 +221,7 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct(String id) async {
+  Future<void> deleteProduct(int id) async {
     final url =
         'https://shop-43d63-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
@@ -366,39 +237,34 @@ class Products with ChangeNotifier {
     }
     existingProduct = null;
   }
-  ////////////////////////////////////////////
-  List<Product> _products = [];
 
-  List<Product> get products => _products;
+  Future<void> updateRating(double rating, int productId) async {
+    const url = "https://ar-store-production.up.railway.app/api/glasses/rate";
 
-Future<void> fetchProducts() async {
+    Map<String, dynamic> requestRegistrationBody = {
+      'itemId': productId,
+      'rating': rating,
+    };
+
+    Map<String, String> requestHeaders = {
+      'accept': '*/*',
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+
     try {
-     final apiUrl=Uri.parse("https://ar-store-production.up.railway.app/api/glasses");
-      // Make an HTTP request to fetch the products from your API
-      final response = await http.get(apiUrl);
-
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: requestHeaders,
+        body: jsonEncode(requestRegistrationBody),
+      );
+      print(response.statusCode);
       if (response.statusCode == 200) {
-        // Parse the response body and convert it to a list of products
-        final List<dynamic> responseData = json.decode(response.body);
-        _products = responseData.map((data) => Product.fromMap(data)).toList();
-
-        notifyListeners(); // Notify listeners that the state has changed
+        print('---------------rating updated');
       } else {
-        // Handle error response
-        print('Failed to fetch products. Status code: ${response.statusCode}');
+        print('not updated rating');
       }
-    } catch (error) {
-      // Handle network or other errors
-      print('Failed to fetch products: $error');
-    }
+    } catch (e) {}
+    notifyListeners();
   }
-
-
-
-
-
-
-
-
-
 }

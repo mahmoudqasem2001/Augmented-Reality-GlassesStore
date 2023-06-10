@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/cart_provider.dart';
@@ -11,9 +10,9 @@ class ItemBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
-        .findById(productId as String);
+        .findById(productId as int);
     final cart = Provider.of<Cart>(context, listen: false);
-    var quantity = Provider.of<Products>(context, listen: false);
+    var productsProvider = Provider.of<Products>(context, listen: false);
     return BottomAppBar(
       child: Container(
         decoration: BoxDecoration(
@@ -63,12 +62,19 @@ class ItemBottomNavBar extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
                 child: TextButton(
                   onPressed: () {
-                    if (quantity.productQuantity == 0) {
+                    if (productsProvider.productQuantity == 0) {
                       return;
                     }
-                    cart.addItem(loadedProduct.id!, loadedProduct.price!,
-                        loadedProduct.brand!.name!, quantity.productQuantity);
-                    quantity.setProductQuantity(0);
+                    cart.addItem(
+                        productId,
+                        loadedProduct.price,
+                        loadedProduct.brand!.name,
+                        productsProvider.productQuantity);
+                    cart.addToCart(
+                      loadedProduct.id!,
+                      loadedProduct.price!.toInt(),
+                    );
+                    productsProvider.setProductQuantity(0);
                   },
                   child: Column(
                     children: [

@@ -42,6 +42,7 @@ dependencies:
   dropdown_search: ^5.0.6
   intl_phone_field: ^3.1.0
   country_state_city_picker: ^1.2.8
+  country_picker: ^2.0.20
 
 dev_dependencies:
   build_runner: ^2.4.4

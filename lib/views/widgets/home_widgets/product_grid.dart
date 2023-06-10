@@ -1,27 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/product_provider.dart';
 import 'package:shop_app/views/widgets/home_widgets/product_item.dart';
-import '../../../models/product.dart';
 import '../../../providers/products_provider.dart';
 
-class ProductsGrid extends StatefulWidget {
+class ProductsGrid extends StatelessWidget {
   const ProductsGrid({Key? key}) : super(key: key);
 
   @override
-  State<ProductsGrid> createState() => _ProductsGridState();
-}
-
-class _ProductsGridState extends State<ProductsGrid> {
-  List<Product> prods = [];
-
-  @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context, listen: false);
-    return Consumer<Products>(builder: (_, products, ch) {
+    List<Product> prods = [];
+    return Consumer<Products>(builder: (ctx, products, ch) {
       prods = products.items;
-      for (var i = 0; i < prods.length; i++) {
-        print(prods[i].price);
-      }
+      // print('sort');
+      // for (var i = 0; i < prods.length; i++) {
+      //   print(prods[i].price);
+      // }
       return prods.isEmpty
           ? const Center(
               child: Text("There is no product!"),

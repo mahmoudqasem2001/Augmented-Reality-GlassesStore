@@ -1,72 +1,63 @@
 import 'dart:io';
-
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:intl_phone_field/phone_number.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/models/address.dart';
-import 'package:shop_app/views/screens/home_screens/home_screen.dart';
-
-import '../../../core/constants.dart';
-import '../../../providers/auth_provider.dart';
+import '../../../providers/auth.dart';
+import '../../screens/home_screens/home_screen.dart';
 import '../auth_common_widgets/form_error.dart';
 
-class SignUpForm extends StatefulWidget {
-  const SignUpForm({Key? key}) : super(key: key);
+class StoreSignUpForm extends StatefulWidget {
+  const StoreSignUpForm({Key? key}) : super(key: key);
 
   @override
-  _SignUpFormState createState() => _SignUpFormState();
+  _StoreSignUpFormState createState() => _StoreSignUpFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class _StoreSignUpFormState extends State<StoreSignUpForm> {
   final _formKey = GlobalKey<FormState>();
-  String? email;
-  String? password;
-  String? conformPassword;
-  PhoneNumber? phoneNumber;
-  Address? address;
-  bool remember = false;
+  final name = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+  final conformPassword = TextEditingController();
+  final phoneNumber = TextEditingController();
+  final country = TextEditingController();
+  final city = TextEditingController();
+  final street = TextEditingController();
+  final zip = TextEditingController();
+
+
   final List<String?> errors = [];
 
-  void addError({String? error}) {
-    if (!errors.contains(error)) {
-      setState(() {
-        errors.add(error);
-      });
-    }
-  }
+  var selectedItem;
 
-  void removeError({String? error}) {
-    if (errors.contains(error)) {
-      setState(() {
-        errors.remove(error);
-      });
-    }
-  }
-
-  final Map<String, String> _authData = {
-    'email': '',
-    'password': '',
-    'userType': ''
-  };
-
-  final _passwordController = TextEditingController();
-  var _isLoading = false;
-
-  Future<void> _submit() async {
+  void _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     FocusScope.of(context).unfocus();
     _formKey.currentState!.save();
 
-    setState(() {
-      _isLoading = true;
-    });
+    Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
 
     try {
-      await Provider.of<Auth>(context, listen: false).signUp(
-          _authData['email']!, _authData['password']!, _authData['userType']!);
+      bool authenticated = await Provider.of<Auth>(context, listen: false)
+          .storeRegister(
+              storeName: name.text,
+              phoneNumber: '0' + phoneNumber.text,
+              country: country.text,
+              city: city.text,
+              street: street.text,
+              zip: zip.text,
+              email: email.text,
+              password: password.text);
+      Provider.of<Auth>(context, listen: false).setAuthentucated(authenticated);
+
+      if (authenticated == true) {
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      } else {
+        print('something wrong');
+      }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXIST')) {
@@ -82,13 +73,12 @@ class _SignUpFormState extends State<SignUpForm> {
       }
       _showErrorDialog(errorMessage);
     } catch (error) {
+      print(error);
       const errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
     }
-    setState(() {
-      _isLoading = false;
-    });
+    Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
   }
 
   void _showErrorDialog(String errorMessage) {
@@ -114,6 +104,10 @@ class _SignUpFormState extends State<SignUpForm> {
       key: _formKey,
       child: Column(
         children: [
+          buildNameFormField(),
+          const SizedBox(
+            height: 30,
+          ),
           buildEmailFormField(),
           const SizedBox(height: 30),
           buildPasswordFormField(),
@@ -146,25 +140,75 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
+  TextFormField buildNameFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.name,
+      controller: name,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Your name must not be empty";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Name",
+        hintText: "Enter Store's name",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(Icons.person),
+      ),
+    );
+  }
+
+  TextFormField buildEmailFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.emailAddress,
+      controller: email,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Email must not be empty";
+        } else if (!value.contains('@')) {
+          return "Please enter a valid email";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Email",
+        hintText: "Enter your email",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(Icons.email),
+      ),
+    );
+  }
+
   TextFormField buildConformPassFormField() {
     return TextFormField(
       obscureText: true,
-      onSaved: (newValue) => conformPassword = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.isNotEmpty && password == conformPassword) {
-          removeError(error: kMatchPassError);
-        }
-        conformPassword = value;
-      },
+      controller: conformPassword,
       validator: (value) {
         if (value!.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
-        } else if ((password != value)) {
-          addError(error: kMatchPassError);
-          return "";
+          return "password must not be empty";
+        } else if (conformPassword.text != password.text) {
+          return "Paswords does not matched";
         }
         return null;
       },
@@ -192,23 +236,12 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildPasswordFormField() {
     return TextFormField(
       obscureText: true,
-      controller: _passwordController,
-      onSaved: (newValue) => password = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.length >= 8) {
-          removeError(error: kShortPassError);
-        }
-        password = value;
-      },
+      controller: password,
       validator: (value) {
         if (value!.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
+          return "Password must not be empty";
         } else if (value.length < 8) {
-          addError(error: kShortPassError);
-          return "";
+          return "Password must be more than 7 charactars";
         }
         return null;
       },
@@ -233,47 +266,6 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  TextFormField buildEmailFormField() {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      onSaved: (newValue) => email = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kEmailNullError);
-        } else if (emailValidatorRegExp.hasMatch(value)) {
-          removeError(error: kEmailInvalidError);
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty) {
-          addError(error: kEmailNullError);
-          return "";
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
-          addError(error: kEmailInvalidError);
-          return "";
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        labelText: "Email",
-        hintText: "Enter your email",
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28),
-          borderSide: const BorderSide(color: Colors.black),
-          gapPadding: 5,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28),
-          gapPadding: 5,
-          borderSide: const BorderSide(color: Colors.black),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: const Icon(Icons.email),
-      ),
-    );
-  }
-
   Widget buildPhoneNumberFormField() {
     return IntlPhoneField(
       decoration: InputDecoration(
@@ -293,72 +285,68 @@ class _SignUpFormState extends State<SignUpForm> {
       ),
       initialCountryCode: 'PS',
       keyboardType: TextInputType.phone,
-      onSaved: (newValue) => phoneNumber = newValue,
-      onChanged: (value) {
-        if (value.toString().isNotEmpty) {
-          removeError(error: kPhoneNumberNullError);
-        }
-        return;
-      },
+      controller: phoneNumber,
       validator: (value) {
         if (value!.toString().isEmpty) {
-          addError(error: kPhoneNumberNullError);
-          return "";
+          return "PhoneNumber must not be empty";
         }
         return null;
       },
     );
   }
 
-  TextFormField buildCountryFormField() {
-    return TextFormField(
-      onSaved: (newValue) => address?.country = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kAddressNullError);
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty) {
-          addError(error: kAddressNullError);
-          return "";
-        }
-        return null;
-      },
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        labelText: "Country",
-        hintText: "Enter your Country",
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28),
-          borderSide: const BorderSide(color: Colors.black),
-          gapPadding: 5,
+  Widget buildCountryFormField() {
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            showCountryPicker(
+                context: context,
+                countryListTheme: CountryListThemeData(
+                  flagSize: 25,
+                  backgroundColor: Colors.white,
+                  textStyle: TextStyle(fontSize: 16, color: Colors.blueGrey),
+                  bottomSheetHeight: 500, // Optional. Country list modal height
+                  inputDecoration: InputDecoration(
+                    labelText: 'Search',
+                    hintText: 'Start typing to search',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF8C98A8).withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                ),
+                onSelect: (Country selectedCountry) {
+                  country.text = selectedCountry.displayName.split(" ").first;
+                  Provider.of<Auth>(context, listen: false)
+                      .setCountry(country.text);
+                });
+          },
+          child: Consumer<Auth>(
+            builder: (_, auth, ch) {
+              return Row(
+                children: [
+                  auth.country.isEmpty
+                      ? Text("Select Country")
+                      : Text(country.text),
+                  Icon(Icons.arrow_drop_down),
+                ],
+              );
+            },
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28),
-          gapPadding: 5,
-          borderSide: const BorderSide(color: Colors.black),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: const Icon(Icons.location_on),
-      ),
+      ],
     );
   }
 
   TextFormField buildCityFormField() {
     return TextFormField(
-      onSaved: (newValue) => address?.city = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kAddressNullError);
-        }
-        return;
-      },
+      controller: city,
       validator: (value) {
         if (value!.isEmpty) {
-          addError(error: kAddressNullError);
-          return "";
+          return "City must not be empty";
         }
         return null;
       },
@@ -384,17 +372,10 @@ class _SignUpFormState extends State<SignUpForm> {
 
   TextFormField buildStreetFormField() {
     return TextFormField(
-      onSaved: (newValue) => address?.street = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kAddressNullError);
-        }
-        return;
-      },
+      controller: street,
       validator: (value) {
         if (value!.isEmpty) {
-          addError(error: kAddressNullError);
-          return "";
+          return "Street must not be empty";
         }
         return null;
       },
@@ -420,17 +401,10 @@ class _SignUpFormState extends State<SignUpForm> {
 
   TextFormField buildZipFormField() {
     return TextFormField(
-      onSaved: (newValue) => address?.zip = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kAddressNullError);
-        }
-        return;
-      },
+      controller: zip,
       validator: (value) {
         if (value!.isEmpty) {
-          addError(error: kAddressNullError);
-          return "";
+          return "Zip must not be empty";
         }
         return null;
       },
@@ -465,14 +439,20 @@ class _SignUpFormState extends State<SignUpForm> {
               _formKey.currentState!.save();
             }
             _submit();
-            Navigator.of(context).pushNamed(HomeScreen.routeName);
+            //Navigator.of(context).pushNamed(HomeScreen.routeName);
           },
           minWidth: 200,
           height: 50,
           color: Colors.black,
-          child: const Text(
-            'Continue',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+          child: Consumer<Auth>(
+            builder: (_, auth, child) {
+              return auth.isLoading
+                  ? CircularProgressIndicator()
+                  : const Text(
+                      'Continue',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    );
+            },
           ),
         ),
       ),

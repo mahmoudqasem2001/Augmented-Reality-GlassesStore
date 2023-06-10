@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../providers/auth_provider.dart';
 
-enum Fav { fav, notFav }
+
 
 class ItemAppBar extends StatelessWidget {
   const ItemAppBar({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final authData = Provider.of<Auth>(context, listen: false);
 
     return Container(
       color: Theme.of(context).colorScheme.secondary,

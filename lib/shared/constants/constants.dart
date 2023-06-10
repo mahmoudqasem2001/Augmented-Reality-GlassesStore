@@ -1,0 +1,2 @@
+String? token;
+String? id;

@@ -9,6 +9,7 @@ class StoresScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: Text(
           'Stores',
@@ -21,7 +22,6 @@ class StoresScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            
             Navigator.of(context).pushNamed(HomeScreen.routeName);
           },
         ),

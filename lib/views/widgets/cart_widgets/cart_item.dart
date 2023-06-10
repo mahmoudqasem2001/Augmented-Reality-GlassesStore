@@ -4,12 +4,11 @@ import '../../../providers/cart_provider.dart';
 import '../../../providers/products_provider.dart';
 
 class CartItem extends StatelessWidget {
-  final String id;
-  final String productId;
-  final double price;
-
-  final int quantity;
-  final String title;
+  final String? id;
+  final int? productId;
+  final double? price;
+  final int? quantity;
+  final String? title;
 
   const CartItem(this.id, this.productId, this.price, this.quantity, this.title,
       {Key? key})
@@ -17,7 +16,7 @@ class CartItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageIrl = Provider.of<Products>(context, listen: false)
-        .findById(productId)
+        .findById(productId!)
         .imageUrls![0];
     return Dismissible(
       background: Container(
@@ -41,6 +40,7 @@ class CartItem extends StatelessWidget {
         return showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             title: const Text('Are you sure?'),
             content: const Text('Do you to remove  item from the cart?'),
             actions: [
@@ -55,7 +55,7 @@ class CartItem extends StatelessWidget {
         );
       },
       onDismissed: (direction) {
-        Provider.of<Cart>(context, listen: false).removeItem(productId);
+        Provider.of<Cart>(context, listen: false).removeItem(productId!);
       },
       key: ValueKey(id),
       child: Card(
@@ -70,16 +70,20 @@ class CartItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(25.0),
               child: Image.network(imageIrl),
             ),
-            title: Text(title),
+            title: Text(title!),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 Text(
                   'Price \$$price',
                 ),
-                const SizedBox(height: 10,),
-                Text('Total \$${(price * quantity)}'),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text('Total \$${(price! * quantity!)}'),
               ],
             ),
             trailing: Text('$quantity x'),

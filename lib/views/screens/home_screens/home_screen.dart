@@ -49,30 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('EYEWEAR'),
         iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
         actions: const [
-          // PopupMenuButton(
-          //   onSelected: (FilterOption selectedVal) {
-          //     setState(() {
-          //       if (selectedVal == FilterOption.favorites) {
-          //         _showOnlyFavorites = true;
-          //       } else {
-          //         _showOnlyFavorites = false;
-          //       }
-          //     });
-          //   },
-          //   icon: const Icon(Icons.more_vert),
-          //   itemBuilder: (_) {
-          //     return [
-          //       const PopupMenuItem(
-          //         child: Text("Only Favorites"),
-          //         value: FilterOption.favorites,
-          //       ),
-          //       const PopupMenuItem(
-          //         child: Text("Show All"),
-          //         value: FilterOption.all,
-          //       ),
-          //     ];
-          //   },
-          // ),
           Icon(Icons.add_home,color: Colors.white )
         ],
         

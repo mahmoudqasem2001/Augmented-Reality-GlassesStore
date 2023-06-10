@@ -8,6 +8,7 @@ class HelpingCenter extends StatelessWidget {
     var textStyle = const TextStyle(
         fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black);
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         centerTitle: true,
         title: Text(

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/models/brand.dart';
 import 'package:shop_app/providers/products_provider.dart';
-import '../../../../models/glasses_filter.dart';
-import '../../../screens/home_screens/home_screen.dart';
 
 class ProductFilterWidget extends StatelessWidget {
   const ProductFilterWidget({Key? key}) : super(key: key);
@@ -16,7 +13,6 @@ class ProductFilterWidget extends StatelessWidget {
     String? typeFilter;
     String? borderFilter;
     String? shapeFilter;
-    final showErrorMessage = Provider.of<Products>(context, listen: false);
     final themeColor = Theme.of(context).colorScheme.secondary;
     return SizedBox(
       height: 1200,
@@ -33,16 +29,15 @@ class ProductFilterWidget extends StatelessWidget {
               // productFilter.updateFilter(newFilter);
               genderFilter = value;
             },
-            items: [
-              DropdownMenuItem(value: 'Men', child: Text('Men')),
-              DropdownMenuItem(value: 'Women', child: Text('Women')),
+            items:const [
+              DropdownMenuItem(value: 'Male', child: Text('Male')),
+              DropdownMenuItem(value: 'Female', child: Text('Female')),
             ],
             decoration: InputDecoration(
               labelText: 'Gender',
             ),
             dropdownColor: themeColor,
           ),
-
           // Brand filter
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.brand?.name,
@@ -56,13 +51,13 @@ class ProductFilterWidget extends StatelessWidget {
               DropdownMenuItem(
                   value: 'ALESSIO SUNGLASSES',
                   child: Text('ALESSIO SUNGLASSES')),
-              DropdownMenuItem(value: 'Brand 2', child: Text('Brand 2')),
+              DropdownMenuItem(value: 'BYALLY SUNGLASSES', child: Text('BYALLY SUNGLASSES')),
             ],
             decoration: InputDecoration(
               labelText: 'Brand',
             ),
+            dropdownColor: themeColor,
           ),
-
           // Type filter
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.type,
@@ -74,11 +69,12 @@ class ProductFilterWidget extends StatelessWidget {
             },
             items: [
               DropdownMenuItem(value: 'SunGlasses', child: Text('SunGlasses')),
-              DropdownMenuItem(value: 'Type 2', child: Text('Type 2')),
+              DropdownMenuItem(value: 'ProtectionGlasses', child: Text('ProtectionGlasses')),
             ],
             decoration: InputDecoration(
               labelText: 'Type',
             ),
+            dropdownColor: themeColor,
           ),
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.gender,
@@ -95,6 +91,7 @@ class ProductFilterWidget extends StatelessWidget {
             decoration: InputDecoration(
               labelText: 'Border',
             ),
+            dropdownColor: themeColor,
           ),
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.gender,
@@ -111,35 +108,26 @@ class ProductFilterWidget extends StatelessWidget {
             decoration: InputDecoration(
               labelText: 'Shape',
             ),
+            dropdownColor: themeColor,
           ),
           // Apply filter button
           ElevatedButton(
             onPressed: () {
-              GlassesFilter updatedFilter = GlassesFilter(
-                gender: genderFilter,
-                brand: Brand(name: brandNameFilter),
-                type: typeFilter,
-                border: borderFilter,
-                shape: shapeFilter,
-              );
-              if (genderFilter == null ||
-                  brandNameFilter == null ||
-                  typeFilter == null ||
-                  borderFilter == null ||
-                  shapeFilter == null) {
-                showErrorMessage.showErrorFilterMessage(true);
-              } else {
-                productFilter.updateFilter(updatedFilter);
-                showErrorMessage.showErrorFilterMessage(false);
-              }
+              productFilter.updateFilter(genderFilter, brandNameFilter,
+                  typeFilter, borderFilter, shapeFilter);
             },
-            child: Text('Apply Filter'),
+            child:const Text('Apply Filter'),
           ),
-          Text(
-            !showErrorMessage.showErrorFilterMessage
-                ? 'please select all filters'
-                : '',
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ElevatedButton(
+            onPressed: () {
+              genderFilter = null;
+              brandNameFilter = null;
+              typeFilter = null;
+              borderFilter = null;
+              shapeFilter = null;
+              productFilter.clearFilters();
+            },
+            child:const Text('Clear Filters'),
           ),
         ],
       ),

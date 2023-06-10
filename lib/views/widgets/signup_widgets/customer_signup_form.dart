@@ -1,0 +1,505 @@
+import 'dart:io';
+import 'package:country_picker/country_picker.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/auth.dart';
+import '../../screens/home_screens/home_screen.dart';
+import '../auth_common_widgets/form_error.dart';
+
+class CustomerSignUpForm extends StatefulWidget {
+  const CustomerSignUpForm({Key? key}) : super(key: key);
+
+  @override
+  _CustomerSignUpFormState createState() => _CustomerSignUpFormState();
+}
+
+class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
+  final _formKey = GlobalKey<FormState>();
+  final name = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+  final conformPassword = TextEditingController();
+  final phoneNumber = TextEditingController();
+  final country = TextEditingController();
+  final city = TextEditingController();
+  final street = TextEditingController();
+  final zip = TextEditingController();
+  final gender = TextEditingController();
+
+  final List<String?> errors = [];
+
+  var selectedItem;
+
+  void _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    FocusScope.of(context).unfocus();
+    _formKey.currentState!.save();
+
+    Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
+
+    try {
+      bool authenticated = await Provider.of<Auth>(context, listen: false)
+          .customerRegister(
+              userName: name.text,
+              userPhoneNumber: '0' + phoneNumber.text,
+              country: country.text,
+              city: city.text,
+              street: street.text,
+              zip: zip.text,
+              userGender: gender.text,
+              email: email.text,
+              password: password.text);
+
+      Provider.of<Auth>(context, listen: false).setAuthentucated(authenticated);
+
+      if (authenticated == true) {
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      } else {
+        print('something wrong');
+      }
+    } on HttpException catch (error) {
+      var errorMessage = 'Authentication failed';
+      if (error.toString().contains('EMAIL_EXIST')) {
+        errorMessage = 'This email address is already use';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is too weak';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Could not find a user with that email';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid password';
+      }
+      _showErrorDialog(errorMessage);
+    } catch (error) {
+      print(error);
+      const errorMessage =
+          'Could not authenticate you. Please try again later.';
+      _showErrorDialog(errorMessage);
+    }
+    Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
+  }
+
+  void _showErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('An Error Occurred!'),
+        content: Text(errorMessage),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('okey!')),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const String policyTerms =
+        'By signing in, you agree to Store Terms of Service \nand acknowledge that your personal information will be\n processed in accordance with Store Privacy Policy.';
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          buildNameFormField(),
+          const SizedBox(
+            height: 30,
+          ),
+          buildEmailFormField(),
+          const SizedBox(height: 30),
+          buildPasswordFormField(),
+          const SizedBox(height: 30),
+          buildConformPassFormField(),
+          const SizedBox(height: 30),
+          buildPhoneNumberFormField(),
+          const SizedBox(height: 20),
+          buildGenderSelector(),
+          const SizedBox(height: 30),
+          buildCountryFormField(),
+          const SizedBox(height: 30),
+          buildCityFormField(),
+          const SizedBox(height: 30),
+          buildStreetFormField(),
+          const SizedBox(height: 30),
+          buildZipFormField(),
+          const SizedBox(height: 20),
+          FormError(errors: errors),
+          const SizedBox(height: 40),
+          const Text(
+            policyTerms,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          submitSignUpButton(),
+        ],
+      ),
+    );
+  }
+
+  TextFormField buildNameFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.name,
+      controller: name,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Your name must not be empty";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Name",
+        hintText: "Enter your name",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(Icons.person),
+      ),
+    );
+  }
+
+  TextFormField buildEmailFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.emailAddress,
+      controller: email,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Email must not be empty";
+        } else if (!value.contains('@')) {
+          return "Please enter a valid email";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Email",
+        hintText: "Enter your email",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(Icons.email),
+      ),
+    );
+  }
+
+  TextFormField buildConformPassFormField() {
+    return TextFormField(
+      obscureText: true,
+      controller: conformPassword,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "password must not be empty";
+        } else if (conformPassword.text != password.text) {
+          return "Paswords does not matched";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Confirm Password",
+        hintText: "Re-enter your password",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(
+          Icons.key,
+        ),
+      ),
+    );
+  }
+
+  TextFormField buildPasswordFormField() {
+    return TextFormField(
+      obscureText: true,
+      controller: password,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Password must not be empty";
+        } else if (value.length < 8) {
+          return "Password must be more than 7 charactars";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Password",
+        hintText: "Enter your password",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(
+          Icons.key,
+        ),
+      ),
+    );
+  }
+
+  Widget buildGenderSelector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(
+          width: 10,
+        ),
+        SizedBox(
+          width: 130,
+          child: DropdownSearch<String>(
+            popupProps: PopupProps.menu(
+              fit: FlexFit.loose,
+              menuProps: MenuProps(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              showSelectedItems: true,
+            ),
+            items: const ['MALE', 'FEMALE'],
+            dropdownDecoratorProps: const DropDownDecoratorProps(
+              baseStyle: TextStyle(fontSize: 11),
+              dropdownSearchDecoration: InputDecoration(
+                labelText: "Gender",
+              ),
+            ),
+            onChanged: (String? newValue) {
+              gender.text = newValue!;
+            },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return "You must select gender";
+              }
+              return null;
+            },
+            selectedItem: selectedItem,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildPhoneNumberFormField() {
+    return IntlPhoneField(
+      decoration: InputDecoration(
+        suffixIcon: const Icon(Icons.phone),
+        labelText: 'Phone Number',
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      initialCountryCode: 'PS',
+      keyboardType: TextInputType.phone,
+      controller: phoneNumber,
+      validator: (value) {
+        if (value!.toString().isEmpty) {
+          return "PhoneNumber must not be empty";
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget buildCountryFormField() {
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            showCountryPicker(
+                context: context,
+                countryListTheme: CountryListThemeData(
+                  flagSize: 25,
+                  backgroundColor: Colors.white,
+                  textStyle: TextStyle(fontSize: 16, color: Colors.blueGrey),
+                  bottomSheetHeight: 500, // Optional. Country list modal height
+                  inputDecoration: InputDecoration(
+                    labelText: 'Search',
+                    hintText: 'Start typing to search',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF8C98A8).withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                ),
+                onSelect: (Country selectedCountry) {
+                  country.text = selectedCountry.displayName.split(" ").first;
+                  Provider.of<Auth>(context, listen: false)
+                      .setCountry(country.text);
+                });
+          },
+          child: Consumer<Auth>(
+            builder: (_, auth, ch) {
+              return Row(
+                children: [
+                  auth.country.isEmpty
+                      ? Text("Select Country")
+                      : Text(country.text),
+                  Icon(Icons.arrow_drop_down),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  TextFormField buildCityFormField() {
+    return TextFormField(
+      controller: city,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "City must not be empty";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        labelText: "City",
+        hintText: "Enter your City",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(Icons.location_on),
+      ),
+    );
+  }
+
+  TextFormField buildStreetFormField() {
+    return TextFormField(
+      controller: street,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Street must not be empty";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.streetAddress,
+      decoration: InputDecoration(
+        labelText: "Street",
+        hintText: "Enter your Street",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(Icons.location_on),
+      ),
+    );
+  }
+
+  TextFormField buildZipFormField() {
+    return TextFormField(
+      controller: zip,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Zip must not be empty";
+        }
+        return null;
+      },
+      keyboardType: TextInputType.streetAddress,
+      decoration: InputDecoration(
+        labelText: "Zip",
+        hintText: "Enter your Zip",
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          borderSide: const BorderSide(color: Colors.black),
+          gapPadding: 5,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(28),
+          gapPadding: 5,
+          borderSide: const BorderSide(color: Colors.black),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: const Icon(Icons.location_on),
+      ),
+    );
+  }
+
+  Widget submitSignUpButton() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: MaterialButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+            }
+            _submit();
+          },
+          minWidth: 200,
+          height: 50,
+          color: Colors.black,
+          child: Consumer<Auth>(
+            builder: (_, auth, child) {
+              return auth.isLoading
+                  ? CircularProgressIndicator()
+                  : const Text(
+                      'Continue',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}

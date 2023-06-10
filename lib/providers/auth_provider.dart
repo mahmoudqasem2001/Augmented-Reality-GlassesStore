@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import '../providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Auth with ChangeNotifier {
   String? _token;
   DateTime? _expiryDate;
-  String? _userId;
   Timer? _auhtTimer;
 
   bool get isAuth {
@@ -25,13 +24,14 @@ class Auth with ChangeNotifier {
     return '';
   }
 
-  String? get userId {
-    return _userId;
-  }
-
   Future<void> _authenticateRegistration(
-      String email, String password,String? userType,String urlSegment,  ) async {
-    final url = 'https://ar-store-production.up.railway.app/api/auth/${urlSegment}';
+    String email,
+    String password,
+    String? userType,
+    String urlSegment,
+  ) async {
+    final url =
+        'https://ar-store-production.up.railway.app/api/auth/${urlSegment}';
     try {
       final res = await http.post(Uri.parse(url),
           body: json.encode({
@@ -40,13 +40,7 @@ class Auth with ChangeNotifier {
             'userType': userType,
           }));
       final responseDate = json.decode(res.body);
-      if (responseDate['error'] != null) {
-        throw HttpException(responseDate['error']['message']);
-      }
       _token = responseDate['token'];
-     // _userId = responseDate['localId'];
-      // _expiryDate = DateTime.now()
-      //     .add(Duration(seconds: int.parse(responseDate['expiresIn'])));
 
       // _autoLogout();
       notifyListeners();
@@ -63,10 +57,10 @@ class Auth with ChangeNotifier {
     }
   }
 
-
-Future<void> _authenticateLogin(
-      String email, String password,String urlSegment) async {
-    final url = 'https://ar-store-production.up.railway.app/api/auth/${urlSegment}';
+  Future<void> _authenticateLogin(
+      String email, String password, String urlSegment) async {
+    final url =
+        'https://ar-store-production.up.railway.app/api/auth/${urlSegment}';
     try {
       final res = await http.post(Uri.parse(url),
           body: json.encode({
@@ -78,7 +72,7 @@ Future<void> _authenticateLogin(
         throw HttpException(responseDate['error']['message']);
       }
       _token = responseDate['token'];
-     // _userId = responseDate['localId'];
+      // _userId = responseDate['localId'];
       // _expiryDate = DateTime.now()
       //     .add(Duration(seconds: int.parse(responseDate['expiresIn'])));
 
@@ -96,8 +90,9 @@ Future<void> _authenticateLogin(
       rethrow;
     }
   }
-  Future<void> signUp(String email, String password,String userType) async {
-    return _authenticateRegistration(email, password,userType, "signUp" );
+
+  Future<void> signUp(String email, String password, String userType) async {
+    return _authenticateRegistration(email, password, userType, "signUp");
   }
 
   Future<void> login(String email, String password) async {
@@ -115,7 +110,7 @@ Future<void> _authenticateLogin(
     if (expiryDate.isBefore(DateTime.now())) return false;
 
     _token = extractedData['token'] as String;
-    _userId = extractedData['userId'] as String;
+    // _userId = extractedData['userId'] as String;
     _expiryDate = expiryDate;
 
     notifyListeners();
@@ -126,7 +121,7 @@ Future<void> _authenticateLogin(
 
   Future<void> logout() async {
     _token = null;
-    _userId = null;
+    // _userId = null;
     _expiryDate = null;
     if (_auhtTimer != null) {
       _auhtTimer!.cancel();

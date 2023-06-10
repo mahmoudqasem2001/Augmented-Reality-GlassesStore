@@ -1,15 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:shop_app/models/brand.dart';
 
-import 'brand.dart';
-
-class Product with ChangeNotifier {
+class Glasses {
   final String? id;
   final Brand? brand;
   final String? model;
   final double? price;
+  final int? rating;
   final List<String>? imageUrls;
   final String? color;
   final String? type;
@@ -17,12 +16,12 @@ class Product with ChangeNotifier {
   final String? store;
   final String? border;
   final String? shape;
-
-  Product({
+  Glasses({
     this.id,
     this.brand,
     this.model,
     this.price,
+    this.rating,
     this.imageUrls,
     this.color,
     this.type,
@@ -32,12 +31,15 @@ class Product with ChangeNotifier {
     this.shape,
   });
 
+ 
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'brand': brand?.toMap(),
       'model': model,
       'price': price,
+      'rating': rating,
       'imageUrls': imageUrls,
       'color': color,
       'type': type,
@@ -48,17 +50,14 @@ class Product with ChangeNotifier {
     };
   }
 
-  factory Product.fromMap(Map<String, dynamic> map) {
-    return Product(
+  factory Glasses.fromMap(Map<String, dynamic> map) {
+    return Glasses(
       id: map['id'] != null ? map['id'] as String : null,
-      brand: map['brand'] != null
-          ? Brand.fromMap(map['brand'] as Map<String, dynamic>)
-          : null,
+      brand: map['brand'] != null ? Brand.fromMap(map['brand'] as Map<String,dynamic>) : null,
       model: map['model'] != null ? map['model'] as String : null,
       price: map['price'] != null ? map['price'] as double : null,
-      imageUrls: map['imageUrls'] != null
-          ? List<String>.from((map['imageUrls'] as List<String>))
-          : null,
+      rating: map['rating'] != null ? map['rating'] as int : null,
+      imageUrls: map['imageUrls'] != null ? List<String>.from((map['imageUrls'] as List<String>)) : null,
       color: map['color'] != null ? map['color'] as String : null,
       type: map['type'] != null ? map['type'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,
@@ -70,6 +69,5 @@ class Product with ChangeNotifier {
 
   String toJson() => json.encode(toMap());
 
-  factory Product.fromJson(String source) =>
-      Product.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Glasses.fromJson(String source) => Glasses.fromMap(json.decode(source) as Map<String, dynamic>);
 }

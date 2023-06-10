@@ -23,12 +23,37 @@ class _OrderButtonState extends State<OrderButton> {
               setState(() {
                 _isloading = true;
               });
-              await Provider.of<Orders>(context, listen: false).addOrder(
-                  widget.cart.items.values.toList(), widget.cart.totalAmount);
-              setState(() {
-                _isloading = false;
-              });
-              widget.cart.clear();
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  title: const Text('Are you sure?'),
+                  content: const Text('Do you to make this order?'),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _isloading = false;
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('No')),
+                    TextButton(
+                        onPressed: () async {
+                          await Provider.of<Orders>(context, listen: false)
+                              .addOrder(widget.cart.items.values.toList(),
+                                  widget.cart.totalAmount);
+                          //print(widget.cart.items.values.toList().first.price);
+                          setState(() {
+                            _isloading = false;
+                          });
+                          widget.cart.clear();
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text('Yes')),
+                  ],
+                ),
+              );
             },
       child: _isloading
           ? const CircularProgressIndicator()

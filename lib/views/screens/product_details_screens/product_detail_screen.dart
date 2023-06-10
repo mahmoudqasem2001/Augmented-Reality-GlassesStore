@@ -18,12 +18,6 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  List<Color> colors = [
-    Colors.brown,
-    Colors.black,
-    Colors.grey,
-  ];
-
   var countOfProduct = 0;
   bool _showAttributes = false;
 
@@ -31,7 +25,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
-        .findById(productId as String);
+        .findById(productId as int);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       body: ListView(
@@ -112,7 +106,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       padding: const EdgeInsets.symmetric(
                         vertical: 15,
                       ),
-                      child: productColors(),
+                      child: productColor(),
                     ),
                     const SizedBox(
                       height: 30,
@@ -141,7 +135,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget imageSlider() {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
-        .findById(productId as String);
+        .findById(productId as int);
     return ImageSlideshow(
       width: double.infinity,
       height: 200,
@@ -154,7 +148,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       autoPlayInterval: 3000,
       isLoop: true,
       children: [
-        for (int i = 0; i < 4; i++) ...[
+        for (int i = 0; i < 1; i++) ...[
           Image.network(
             loadedProduct.imageUrls![i],
             fit: BoxFit.cover,
@@ -164,52 +158,64 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget productColors() {
+  Widget productColor() {
+    Map<String, Color> mapColors = {
+      'Brown': Colors.brown,
+      'Black': Colors.black,
+      'Red': Colors.red,
+    };
+
+    final productId = ModalRoute.of(context)!.settings.arguments!;
+    final loadedProduct = Provider.of<Products>(context, listen: false)
+        .findById(productId as int);
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Row(
         children: [
-          for (int i = 0; i < colors.length; i++) ...[
-            Container(
-              height: 30,
-              width: 30,
-              alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(
-                horizontal: 5,
-              ),
-              decoration: BoxDecoration(
-                color: colors[i],
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
+          Container(
+            height: 30,
+            width: 30,
+            alignment: Alignment.center,
+            margin: const EdgeInsets.symmetric(
+              horizontal: 5,
             ),
-          ],
+            decoration: BoxDecoration(
+              color: mapColors[loadedProduct.color],
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     ]);
   }
 
   Widget ratingStars() {
+    final productId = ModalRoute.of(context)!.settings.arguments!;
+    final loadedProduct = Provider.of<Products>(context, listen: false)
+        .findById(productId as int);
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       RatingBar.builder(
           itemBuilder: (context, _) => const Icon(
                 Icons.star,
                 color: Colors.amber,
               ),
-          initialRating: 4,
-          minRating: 1,
+          initialRating: loadedProduct.rating!,
+          minRating: 0,
           direction: Axis.horizontal,
           itemCount: 5,
           itemSize: 20,
           itemPadding: const EdgeInsets.symmetric(
             horizontal: 4,
           ),
-          onRatingUpdate: (index) {}),
+          onRatingUpdate: (index) {
+            Provider.of<Products>(context).updateRating(index , productId);
+          }),
       const IncreaseDecreaseItem(),
     ]);
   }
@@ -217,7 +223,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget showProductAttribute() {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
-        .findById(productId as String);
+        .findById(productId as int);
     return Column(
       children: [
         Column(
@@ -261,16 +267,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         children: [
                           Text('Type: ${loadedProduct.type}'),
                           Text('Gender: ${loadedProduct.gender}'),
-                          Text('Store: ${loadedProduct.store}'),
                         ],
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Store: ${loadedProduct.store!.name}'),
+                          Text('Border: ${loadedProduct.border}'),
+                        ],
+                      ),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text('Border: ${loadedProduct.border}'),
                           Text('Shape: ${loadedProduct.shape}'),
                         ],
                       ),

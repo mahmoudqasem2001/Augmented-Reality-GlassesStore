@@ -1,7 +1,7 @@
 import 'account.dart';
 
 class Store {
-  final String? id;
+  final int? id;
   final String? name;
   final String? phoneNumber;
   final String? address;

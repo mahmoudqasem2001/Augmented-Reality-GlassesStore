@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/brand.dart';
 import 'package:shop_app/providers/products_provider.dart';
 
-import '../../../models/product.dart';
+import '../../../providers/product_provider.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -15,7 +15,6 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
-  final _brandFocusNode = FocusNode();
   final _modelFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
 
@@ -35,7 +34,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   final _formKey = GlobalKey<FormState>();
   var _editedProduct = Product(
-    id: '',
+    id: 0,
     brand: null,
     model: '',
     price: 0,
@@ -43,7 +42,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     color: '',
     type: '',
     gender: '',
-    store: '',
+    store: null,
     border: '',
     shape: '',
   );
@@ -60,7 +59,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'shape': '',
   };
 
-  final _isInit = true;
+//  final _isInit = true;
   var _isLoading = false;
 
   // @override

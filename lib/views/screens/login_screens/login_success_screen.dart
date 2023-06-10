@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/views/screens/home_screens/home_screen.dart';
 
+import '../../../providers/cart_provider.dart';
 
 class LoginSuccessScreen extends StatelessWidget {
   const LoginSuccessScreen({Key? key}) : super(key: key);
@@ -29,8 +31,15 @@ class LoginSuccessScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
             child: MaterialButton(
               onPressed: () {
+                // final cartProvider = Provider.of<Cart>(context);
+                // cartProvider.setIsLoadingIndicator(true);
+                // cartProvider
+                //     .fetchCartItems()
+                //     .then((_) => cartProvider.setIsLoadingIndicator(false))
+                //     .catchError(
+                //         (_) => cartProvider.setIsLoadingIndicator(true));
                 Navigator.of(context)
-                    .pushNamed(HomeScreen.routeName);
+                    .pushReplacementNamed(HomeScreen.routeName);
               },
               color: Theme.of(context).colorScheme.primary,
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),

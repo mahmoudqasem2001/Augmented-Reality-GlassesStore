@@ -7,8 +7,6 @@ class IncreaseDecreaseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var productQuantity =
-        Provider.of<Products>(context, listen: false).productQuantity;
     return Row(
       children: [
         Container(
@@ -28,11 +26,14 @@ class IncreaseDecreaseItem extends StatelessWidget {
           ),
           child: IconButton(
             onPressed: () {
+              var productQuantity =
+                  Provider.of<Products>(context, listen: false).productQuantity;
               if (productQuantity == 0) {
                 return;
               }
               productQuantity--;
-              Provider.of<Products>(context, listen: false).setProductQuantity(productQuantity);
+              Provider.of<Products>(context, listen: false)
+                  .setProductQuantity(productQuantity);
             },
             icon: const Icon(Icons.remove),
           ),
@@ -40,7 +41,7 @@ class IncreaseDecreaseItem extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Consumer<Products>(
-            builder:(_, val, ch)=> Text(
+            builder: (_, val, ch) => Text(
               val.productQuantity.toString(),
               style: TextStyle(
                 fontSize: 18,
@@ -67,8 +68,11 @@ class IncreaseDecreaseItem extends StatelessWidget {
           ),
           child: IconButton(
             onPressed: () {
+              var productQuantity =
+                  Provider.of<Products>(context, listen: false).productQuantity;
               productQuantity++;
-              Provider.of<Products>(context, listen: false).setProductQuantity(productQuantity);
+              Provider.of<Products>(context, listen: false)
+                  .setProductQuantity(productQuantity);
             },
             icon: const Icon(Icons.add),
           ),

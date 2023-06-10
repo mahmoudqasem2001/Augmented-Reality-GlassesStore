@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/home_provider.dart';
-import '../../widgets/signin_widgets/signin_form.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
-  static const routeName = '/login';
+import '../../../providers/home_provider.dart';
+import '../../widgets/signup_widgets/store_signup_form.dart';
 
-  
+class StoreSignUpScreen extends StatelessWidget {
+  StoreSignUpScreen({Key? key}) : super(key: key);
+  static const routeName = '/signUp';
 
   @override
   Widget build(BuildContext context) {
     var home = Provider.of<Home>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: const Text(
-          'Sign In',
+          'Store Sign Up',
           style: TextStyle(
             color: Colors.black,
           ),
@@ -30,11 +30,11 @@ class LoginScreen extends StatelessWidget {
           },
         ),
       ),
-      body: signInBody(),
+      body: signUpBody(),
     );
   }
 
-  SafeArea signInBody() {
+  SafeArea signUpBody() {
     return SafeArea(
       child: SizedBox(
         width: double.infinity,
@@ -43,10 +43,10 @@ class LoginScreen extends StatelessWidget {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           children: const [
             SizedBox(
-              height: 90,
+              height: 40,
             ),
             Text(
-              'Welcome Back',
+              'Complete Profile',
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black,
@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
               height: 10,
             ),
             Text(
-              'Sign in with your email and password',
+              'Complete your details',
               textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -67,7 +67,7 @@ class LoginScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: 20,
               ),
-              child: SignForm(),
+              child: StoreSignUpForm(),
             ),
           ],
         ),

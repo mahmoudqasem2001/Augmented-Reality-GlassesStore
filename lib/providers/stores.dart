@@ -5,7 +5,7 @@ import 'package:shop_app/models/store.dart';
 class Stores with ChangeNotifier {
   final List<Store> _stores = [
     Store(
-      id: 'a1',
+      id: 1,
       name: 'ALKHALDY',
       phoneNumber: '0599344870',
       address: 'Jenin',
@@ -13,7 +13,7 @@ class Stores with ChangeNotifier {
           Account(email: 'mahmoodqasim543@gmail.com', password: '123456789'),
     ),
     Store(
-      id: 'a2',
+      id: 2,
       name: 'SHAMS',
       phoneNumber: '0599344870',
       address: 'Jenin',
@@ -21,7 +21,7 @@ class Stores with ChangeNotifier {
           Account(email: 'mahmoodqasim543@gmail.com', password: '123456789'),
     ),
     Store(
-      id: 'a3',
+      id: 3,
       name: 'TWEEN',
       phoneNumber: '0599344870',
       address: 'Jenin',
@@ -29,7 +29,7 @@ class Stores with ChangeNotifier {
           Account(email: 'mahmoodqasim543@gmail.com', password: '123456789'),
     ),
     Store(
-      id: 'a4',
+      id: 4,
       name: 'QUEEN',
       phoneNumber: '0599344870',
       address: 'Jenin',
@@ -37,7 +37,7 @@ class Stores with ChangeNotifier {
           Account(email: 'mahmoodqasim543@gmail.com', password: '123456789'),
     ),
     Store(
-      id: 'a5',
+      id: 5,
       name: 'QUEEN',
       phoneNumber: '0599344870',
       address: 'Jenin',
