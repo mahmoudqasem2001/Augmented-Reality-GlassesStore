@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/core/api/status_code.dart';
 import 'package:shop_app/models/store.dart';
 import '../models/brand.dart';
 import '../models/glasses_filter.dart';
@@ -12,7 +13,7 @@ class Products with ChangeNotifier {
   List<Product> _items = [];
   List<Product> temp = [];
   bool _itemsFetched = false;
-  bool _isLoadingIndicator = false;
+  bool _isLoadingIndicator = true;
   GlassesFilter _currentFilter = GlassesFilter();
   String _dropdownValue = 'Lowest Price';
   int _productQuantity = 0;
@@ -88,17 +89,13 @@ class Products with ChangeNotifier {
                 newFilter.brand?.name == null))
         .toList();
 
-    // print(filteredList.length);
-    // for (var i = 0; i < filteredList.length; i++) {
-    //   print(filteredList.elementAt(i).id);
-    // }
     _items = filteredList;
 
     notifyListeners();
   }
 
-  void clearFilters() {
-    _items = temp;
+  Future<void> clearFilters() async {
+    fetchAndSetProducts();
     notifyListeners();
   }
 
@@ -107,14 +104,8 @@ class Products with ChangeNotifier {
     _dropdownValue = newValue!;
     if (dropdownValue == 'Lowest Price') {
       sortedProd.sort((a, b) => a.price!.compareTo(b.price as num));
-      // for (var i = 0; i < sortedProd.length; i++) {
-      //   print(sortedProd[i].price);
-      // }
     } else {
       sortedProd.sort((a, b) => b.price!.compareTo(a.price as num));
-      // for (var i = 0; i < sortedProd.length; i++) {
-      //   print(sortedProd[i].price);
-      // }
     }
     _items = sortedProd;
     notifyListeners();
@@ -122,7 +113,6 @@ class Products with ChangeNotifier {
 
   Product findById(int id) {
     Product foundedProduct = _items.firstWhere((prod) => prod.id == id);
-    // print(foundedProduct.price);
     return foundedProduct;
   }
 
@@ -131,11 +121,11 @@ class Products with ChangeNotifier {
       final response = await http.get(
           Uri.parse('https://ar-store-production.up.railway.app/api/glasses'));
       print(response.statusCode);
-      if (response.statusCode == 200) {
+      if (response.statusCode == StatusCode.ok) {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
-        //print(jsonData.length);
+        List<Product> loadedProducts = [];
         for (dynamic map in jsonData) {
-          _items.add(
+          loadedProducts.add(
             Product(
               id: map['id'],
               price: map['price'] as double,
@@ -162,8 +152,8 @@ class Products with ChangeNotifier {
             ),
           );
         }
+        _items = loadedProducts;
         _itemsFetched = true;
-        // print(jsonData.length);
       } else {
         throw Exception('Failed to fetch items');
       }
@@ -194,7 +184,7 @@ class Products with ChangeNotifier {
         body: jsonEncode(requestRegistrationBody),
       );
       print(response.statusCode);
-      if (response.statusCode == 200) {
+      if (response.statusCode == StatusCode.ok) {
         print('---------------rating updated');
       } else {
         print('not updated rating');

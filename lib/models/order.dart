@@ -1,21 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:shop_app/models/order_item.dart';
 
-import 'customer.dart';
-
 class Order {
-  Customer? customer;
-  List<OrderItem>? orderItems;
-  DateTime? orderDate;
-  String? shippingCompany;
-  String? status;
-  double? discount;
+  int id;
+  String orderStatus;
+  int discount;
+  int totalPrice;
+  List<OrderItem> orderItems;
   Order({
-    this.customer,
-    this.orderItems,
-    this.orderDate,
-    this.shippingCompany,
-    this.status, 
-    this.discount,
+    required this.id,
+    required this.orderStatus,
+    required this.discount,
+    required this.totalPrice,
+    required this.orderItems,
   });
+  
+
+  
 }

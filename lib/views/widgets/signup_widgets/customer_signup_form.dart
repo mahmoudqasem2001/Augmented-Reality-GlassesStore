@@ -491,7 +491,7 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
           child: Consumer<Auth>(
             builder: (_, auth, child) {
               return auth.isLoading
-                  ? CircularProgressIndicator()
+                  ? CircularProgressIndicator(color: Colors.white,)
                   : const Text(
                       'Continue',
                       style: TextStyle(color: Colors.white, fontSize: 16),

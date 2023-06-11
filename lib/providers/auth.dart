@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/cache/cacheHelper.dart';
+import 'package:shop_app/core/api/status_code.dart';
 import 'package:shop_app/models/address.dart';
 import 'package:shop_app/models/customer.dart';
 import 'package:shop_app/shared/constants/constants.dart';
@@ -66,7 +67,7 @@ class Auth with ChangeNotifier {
         body: jsonEncode(requestRegistrationBody),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == StatusCode.created) {
         print('yessCustomer......' + response.statusCode.toString());
         Map<String, dynamic> responseHeaders = response.headers;
         String location = responseHeaders['location'];
@@ -81,7 +82,7 @@ class Auth with ChangeNotifier {
         await addressRequest(country, city, street, zip);
         return true;
       }
-      if (response.statusCode == 400) {
+      if (response.statusCode == StatusCode.badRequest) {
         final responseBody = json.decode(response.body);
 
         // Extract the necessary information from the response body
@@ -133,7 +134,7 @@ class Auth with ChangeNotifier {
         body: jsonEncode(requestRegistrationBody),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == StatusCode.created) {
         print('yessStore......' + response.statusCode.toString());
         Map<String, dynamic> responseHeaders = response.headers;
         String location = responseHeaders['location'];
@@ -145,10 +146,11 @@ class Auth with ChangeNotifier {
         await CacheData.setData(
             key: id, value: responseHeaders['authorization']);
 
+        await login(email: email, password: password);
         await addressRequest(country, city, street, zip);
         return true;
       }
-      if (response.statusCode == 400) {
+      if (response.statusCode == StatusCode.badRequest) {
         final responseBody = json.decode(response.body);
 
         // Extract the necessary information from the response body
@@ -184,7 +186,7 @@ class Auth with ChangeNotifier {
         body: jsonEncode(requestBody),
         headers: requestHeaders,
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == StatusCode.ok) {
         var responseHeaders = response.headers;
         await CacheData.deleteItem(key: 'token');
         await CacheData.setData(
@@ -197,7 +199,7 @@ class Auth with ChangeNotifier {
         notifyListeners();
         return true;
       }
-      if (response.statusCode == 400) {
+      if (response.statusCode == StatusCode.badRequest) {
         final responseBody = json.decode(response.body);
 
         // Extract the necessary information from the response body
@@ -241,7 +243,7 @@ class Auth with ChangeNotifier {
         body: jsonEncode(requestAddressBody),
       );
       print(addressResponse.statusCode);
-      if (addressResponse.statusCode == 201) {
+      if (addressResponse.statusCode == StatusCode.created) {
         print('address yes........' + addressResponse.statusCode.toString());
       }
     } catch (e) {
@@ -260,7 +262,7 @@ class Auth with ChangeNotifier {
     print(token);
     try {
       final response = await http.get(Uri.parse(url), headers: requestHeaders);
-      if (response.statusCode == 200) {
+      if (response.statusCode == StatusCode.ok) {
         print(response.statusCode);
         final responseData = json.decode(response.body);
         print(responseData['name']);
@@ -278,7 +280,7 @@ class Auth with ChangeNotifier {
           // ),
         );
         notifyListeners();
-      } else if (response.statusCode == 403) {
+      } else if (response.statusCode == StatusCode.forbidden) {
         print('cant authnticate');
         _authenticated = false;
       }

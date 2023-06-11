@@ -1,12 +1,12 @@
-import 'package:shop_app/models/cart_item.dart';
+import 'package:shop_app/providers/product_provider.dart';
 
 class OrderItem {
-  final double amount;
-  final List<CartItem> products;
-  final DateTime dateTime;
+  int quantity;
+  int price;
+  Product item;
   OrderItem({
-   required this.amount,
-   required this.products,
-   required this.dateTime,
+    required this.quantity,
+    required this.price,
+    required this.item,
   });
 }

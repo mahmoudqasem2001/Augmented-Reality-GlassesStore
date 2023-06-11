@@ -30,8 +30,8 @@ class ProductFilterWidget extends StatelessWidget {
               genderFilter = value;
             },
             items:const [
-              DropdownMenuItem(value: 'Male', child: Text('Male')),
-              DropdownMenuItem(value: 'Female', child: Text('Female')),
+              DropdownMenuItem(value: 'MALE', child: Text('MALE')),
+              DropdownMenuItem(value: 'FEMALE', child: Text('FEMALE')),
             ],
             decoration: InputDecoration(
               labelText: 'Gender',
@@ -101,7 +101,7 @@ class ProductFilterWidget extends StatelessWidget {
               // productFilter.updateFilter(newFilter);
               shapeFilter = value;
             },
-            items: [
+            items:const [
               DropdownMenuItem(value: 'Square', child: Text('Square')),
               DropdownMenuItem(value: 'Circular', child: Text('Circular')),
             ],

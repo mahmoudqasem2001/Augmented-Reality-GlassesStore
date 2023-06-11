@@ -17,21 +17,19 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   var selectedItem;
-
   @override
   void initState() {
-    final productsProvider = Provider.of<Products>(context, listen: false);
     super.initState();
+    final productsProvider = Provider.of<Products>(context, listen: false);
     final itemFetched = productsProvider.itemsFetched;
     if (itemFetched == true) {
       return;
     }
-    productsProvider.setIsLoadingIndicator(true);
+    // productsProvider.setIsLoadingIndicator(true);
 
-    productsProvider
-        .fetchAndSetProducts()
-        .then((_) => productsProvider.setIsLoadingIndicator(false))
-        .catchError((_) => productsProvider.setIsLoadingIndicator(true));
+    productsProvider.fetchAndSetProducts();
+    // .then((_) => productsProvider.setIsLoadingIndicator(false))
+    // .catchError((_) => productsProvider.setIsLoadingIndicator(true));
   }
 
   @override
@@ -66,13 +64,16 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
                 ))
           ]),
         ),
+
         Consumer<Products>(builder: (ctx, prods, _) {
           return Expanded(
-            child: prods.isLoadingIndicator
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : const ProductsGrid(),
+            child:
+                //  prods.isLoadingIndicator
+                //     ? const Center(
+                //         child: CircularProgressIndicator(),
+                //       )
+                //     :
+                ProductsGrid(),
           );
         }),
 

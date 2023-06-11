@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-       // final storeName = ModalRoute.of(context)!.settings.arguments! as String;
+    // final storeName = ModalRoute.of(context)!.settings.arguments! as String;
 
-    List screens =  [
+    List screens = [
       const ProductOverViewScreen(),
       const CartScreen(),
       const ProfileScreen(),
@@ -47,10 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: const Text('EYEWEAR'),
         iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
-        actions: const [
-          Icon(Icons.add_home,color: Colors.white )
-        ],
-        
+        actions: const [Icon(Icons.add_home, color: Colors.white)],
       ),
       body: Consumer<Products>(
         builder: (context, products, child) {
