@@ -20,7 +20,7 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   var countOfProduct = 0;
   bool _showAttributes = false;
-
+  double productRating = 0;
   @override
   Widget build(BuildContext context) {
     final productId = ModalRoute.of(context)!.settings.arguments!;
@@ -112,11 +112,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       height: 30,
                     ),
                     Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: ratingStars()),
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ratingStars(),
+                          const IncreaseDecreaseItem(),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -199,25 +206,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
         .findById(productId as int);
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      RatingBar.builder(
-          itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-          initialRating: loadedProduct.rating!,
-          minRating: 0,
-          direction: Axis.horizontal,
-          itemCount: 5,
-          itemSize: 20,
-          itemPadding: const EdgeInsets.symmetric(
-            horizontal: 4,
-          ),
-          onRatingUpdate: (index) {
-            Provider.of<Products>(context).updateRating(index , productId);
-          }),
-      const IncreaseDecreaseItem(),
-    ]);
+    return RatingBar.builder(
+        itemBuilder: (context, _) => const Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+        initialRating: loadedProduct.rating!,
+        minRating: 0,
+        direction: Axis.horizontal,
+        itemCount: 5,
+        itemSize: 20,
+        itemPadding: const EdgeInsets.symmetric(
+          horizontal: 4,
+        ),
+        onRatingUpdate: (index) {
+          Provider.of<Products>(context, listen: false)
+              .updateRating(index.toInt(), productId);
+        });
   }
 
   Widget showProductAttribute() {

@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/home_provider.dart';
+import 'package:shop_app/providers/products_provider.dart';
 import 'package:shop_app/views/widgets/signup_widgets/customer_signup_form.dart';
 
 
@@ -11,7 +11,7 @@ class CustomerSignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var home = Provider.of<Home>(context, listen: false);
+    final productsProvider = Provider.of<Products>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -26,7 +26,7 @@ class CustomerSignUpScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            home.setBottomBarSelectedIndex(2);
+            productsProvider.setBottomBarSelectedIndex(2);
             Navigator.pop(context);
           },
         ),

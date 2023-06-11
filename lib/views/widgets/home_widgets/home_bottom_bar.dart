@@ -2,7 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart_provider.dart';
-import 'package:shop_app/providers/home_provider.dart';
+import 'package:shop_app/providers/products_provider.dart';
 import '../cart_widgets/badge.dart' as my_badge;
 
 class HomeBottomBar extends StatelessWidget {
@@ -10,11 +10,11 @@ class HomeBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var home = Provider.of<Home>(context, listen: false);
+    final productsProvider = Provider.of<Products>(context, listen: false);
 
     return CurvedNavigationBar(
       backgroundColor: Colors.transparent,
-      index: home.bottomBarSelectedIndex,
+      index: productsProvider.bottomBarSelectedIndex,
       color: Theme.of(context).colorScheme.primary,
       height: 70,
       animationDuration: const Duration(milliseconds: 700),
@@ -45,7 +45,8 @@ class HomeBottomBar extends StatelessWidget {
         ),
       ],
       onTap: (index) {
-        home.setBottomBarSelectedIndex(index);
+        productsProvider.setBottomBarSelectedIndex(index);
+        
       },
     );
   }

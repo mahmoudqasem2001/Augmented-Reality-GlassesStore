@@ -65,14 +65,17 @@ class ItemBottomNavBar extends StatelessWidget {
                     if (productsProvider.productQuantity == 0) {
                       return;
                     }
-                    cart.addItem(
-                        productId,
-                        loadedProduct.price,
-                        loadedProduct.brand!.name,
-                        productsProvider.productQuantity);
+                    // cart.addItem(
+                    //     productId,
+                    //     loadedProduct.price,
+                    //     loadedProduct.brand!.name,
+                    //     productsProvider.productQuantity);
                     cart.addToCart(
                       loadedProduct.id!,
-                      loadedProduct.price!.toInt(),
+                      productsProvider.productQuantity,
+                      loadedProduct.price!,
+                      loadedProduct.brand!.name!,
+                      
                     );
                     productsProvider.setProductQuantity(0);
                   },

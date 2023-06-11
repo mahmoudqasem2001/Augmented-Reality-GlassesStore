@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../providers/home_provider.dart';
+import 'package:shop_app/providers/products_provider.dart';
 import '../../widgets/signup_widgets/store_signup_form.dart';
 
 class StoreSignUpScreen extends StatelessWidget {
@@ -10,7 +9,7 @@ class StoreSignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var home = Provider.of<Home>(context, listen: false);
+    final productsProvider = Provider.of<Products>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -25,7 +24,7 @@ class StoreSignUpScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            home.setBottomBarSelectedIndex(2);
+            productsProvider.setBottomBarSelectedIndex(2);
             Navigator.pop(context);
           },
         ),

@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/home_provider.dart';
 import 'package:shop_app/views/widgets/drawer/end_drawer/end_drawer.dart';
 import '../../widgets/drawer/app_drawer/app_drawer.dart';
 import '../../widgets/cart_widgets/badge.dart' as my_badge;
@@ -53,9 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         
       ),
-      body: Consumer<Home>(
-        builder: (context, value, child) {
-          return screens[value.bottomBarSelectedIndex];
+      body: Consumer<Products>(
+        builder: (context, products, child) {
+          return screens[products.bottomBarSelectedIndex];
         },
       ),
       drawer: const AppDrawer(),

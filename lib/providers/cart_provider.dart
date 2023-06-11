@@ -67,6 +67,8 @@ class Cart with ChangeNotifier {
   Future<void> addToCart(
     int productId,
     int quantity,
+    double price,
+    String title,
   ) async {
     const url = "https://ar-store-production.up.railway.app/api/cartItems";
 
@@ -90,11 +92,10 @@ class Cart with ChangeNotifier {
         headers: requestHeaders,
         body: jsonEncode(requestRegistrationBody),
       );
-      print(response.statusCode);
       if (response.statusCode == 201) {
         print('---------------product added');
-        _isLoadingIndicator = true;
-        fetchCartItems();
+        //_isLoadingIndicator = true;
+        addItem(productId, price, title, quantity);
       } else {
         print('not added');
       }
@@ -166,6 +167,7 @@ class Cart with ChangeNotifier {
       if (response.statusCode == 200) {
         final responseData =
             json.decode(response.body) as List<Map<String, dynamic>>;
+        print(response.body);
         for (var element in responseData) {
           _items.putIfAbsent(
             element['item']['id'],
@@ -176,7 +178,7 @@ class Cart with ChangeNotifier {
                 price: element['item']['price']),
           );
         }
-        _isLoadingIndicator = false;
+        //_isLoadingIndicator = false;
       }
     } catch (e) {}
     notifyListeners();

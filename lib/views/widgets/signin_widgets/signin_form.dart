@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../providers/auth.dart';
 import '../../screens/login_screens/login_success_screen.dart';
 import '../auth_common_widgets/form_error.dart';
+import '../../../providers/cart_provider.dart';
 
 class SignForm extends StatefulWidget {
   const SignForm({Key? key}) : super(key: key);
@@ -19,9 +20,7 @@ class _SignFormState extends State<SignForm> {
   String password = '';
   final List<String> errors = [];
 
-  var _isLoading = false;
-
-  Future<void> _submit() async {
+  _submit() {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -31,17 +30,18 @@ class _SignFormState extends State<SignForm> {
     Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
 
     try {
-      bool authenticated = await Provider.of<Auth>(context, listen: false)
+      bool authenticated = false;
+      Provider.of<Auth>(context, listen: false)
           .login(
-              email: _emailController.text, password: _passwordController.text);
-      //Provider.of<Auth>(context, listen: false).setAuthentucated(authenticated);
+              email: _emailController.text, password: _passwordController.text)
+          .then((value) => authenticated = true);
 
-      if (authenticated == true) {
+     
         Navigator.of(context)
             .pushReplacementNamed(LoginSuccessScreen.routeName);
-      } else {
-        print('something wrong');
-      }
+        Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
+        Provider.of<Cart>(context, listen: false).fetchCartItems();
+     
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXIST')) {
@@ -61,7 +61,6 @@ class _SignFormState extends State<SignForm> {
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
     }
-    Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
   }
 
   void _showErrorDialog(String errorMessage) {
@@ -165,32 +164,36 @@ class _SignFormState extends State<SignForm> {
   }
 
   Widget submitSignInButton() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: MaterialButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-            }
-            _submit();
-          },
-          minWidth: 200,
-          height: 50,
-          color: Colors.black,
-          child: Consumer<Auth>(
-            builder: (_, auth, child) {
-              return auth.isLoading
-                  ? CircularProgressIndicator(color: Colors.white,)
-                  : const Text(
-                      'Continue',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    );
+    return Consumer<Auth>(builder: (_, auth, ch) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: MaterialButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+              }
+              _submit();
             },
+            minWidth: 200,
+            height: 50,
+            color: Colors.black,
+            child: Consumer<Auth>(
+              builder: (_, auth, child) {
+                return auth.isLoading
+                    ? CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : const Text(
+                        'Continue',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      );
+              },
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

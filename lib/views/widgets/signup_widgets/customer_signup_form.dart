@@ -42,7 +42,7 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
     Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
 
     try {
-      bool authenticated = await Provider.of<Auth>(context, listen: false)
+       await Provider.of<Auth>(context, listen: false)
           .customerRegister(
               userName: name.text,
               userPhoneNumber: '0' + phoneNumber.text,
@@ -54,7 +54,7 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
               email: email.text,
               password: password.text);
 
-      Provider.of<Auth>(context, listen: false).setAuthentucated(authenticated);
+      final authenticated= Provider.of<Auth>(context, listen: false).authenticated;
 
       if (authenticated == true) {
         Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);

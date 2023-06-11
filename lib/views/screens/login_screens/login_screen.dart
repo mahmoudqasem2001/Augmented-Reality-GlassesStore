@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/home_provider.dart';
+import 'package:shop_app/providers/products_provider.dart';
 import '../../widgets/signin_widgets/signin_form.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
   static const routeName = '/login';
 
-  
-
   @override
   Widget build(BuildContext context) {
-    var home = Provider.of<Home>(context, listen: false);
+    final productsProvider = Provider.of<Products>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
@@ -25,7 +23,7 @@ class LoginScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            home.setBottomBarSelectedIndex(2);
+            productsProvider.setBottomBarSelectedIndex(2);
             Navigator.pop(context);
           },
         ),

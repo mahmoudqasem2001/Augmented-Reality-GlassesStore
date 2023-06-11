@@ -16,6 +16,17 @@ class Products with ChangeNotifier {
   GlassesFilter _currentFilter = GlassesFilter();
   String _dropdownValue = 'Lowest Price';
   int _productQuantity = 0;
+  bool _showAttributes = false;
+
+  int _bottomBarSelectedIndex = 0;
+
+  int get bottomBarSelectedIndex {
+    return _bottomBarSelectedIndex;
+  }
+
+  bool get showAttributes {
+    return _showAttributes;
+  }
 
   GlassesFilter get currentFilter => _currentFilter;
 
@@ -29,6 +40,11 @@ class Products with ChangeNotifier {
 
   get dropdownValue {
     return _dropdownValue;
+  }
+
+  void setBottomBarSelectedIndex(index) {
+    _bottomBarSelectedIndex = index;
+    notifyListeners();
   }
 
   void setIsLoadingIndicator(bool isLoading) {
@@ -50,15 +66,7 @@ class Products with ChangeNotifier {
     return _items;
   }
 
-///////////
-  bool _showAttributes = false;
-
-  bool get showAttributes {
-    return _showAttributes;
-  }
-
 ////////////////
-  ///
   void updateFilter(String? genderFilter, String? brandNameFilter,
       String? typeFilter, String? borderFilter, String? shapeFilter) {
     GlassesFilter newFilter = GlassesFilter(
@@ -109,16 +117,6 @@ class Products with ChangeNotifier {
       // }
     }
     _items = sortedProd;
-    notifyListeners();
-  }
-
-  String authToken = '';
-  String userId = '';
-
-  getData(String authToken, String uId, List<Product> products) {
-    this.authToken = authToken;
-    userId = uId;
-    _items = products;
     notifyListeners();
   }
 
@@ -175,6 +173,39 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateRating(int rating, int productId) async {
+    const url = "https://ar-store-production.up.railway.app/api/glasses/rate";
+
+    Map<String, dynamic> requestRegistrationBody = {
+      'itemId': productId,
+      'rating': rating,
+    };
+
+    Map<String, String> requestHeaders = {
+      'accept': '*/*',
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: requestHeaders,
+        body: jsonEncode(requestRegistrationBody),
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print('---------------rating updated');
+      } else {
+        print('not updated rating');
+      }
+    } catch (e) {}
+  }
+
+  //////////////////
+  ///
+  ///
+  ///
   Future<void> addProduct(Product product) async {
     final url =
         'https://shop-43d63-default-rtdb.firebaseio.com/products.json?auth=$authToken';
@@ -238,33 +269,13 @@ class Products with ChangeNotifier {
     existingProduct = null;
   }
 
-  Future<void> updateRating(double rating, int productId) async {
-    const url = "https://ar-store-production.up.railway.app/api/glasses/rate";
+  String authToken = '';
+  String userId = '';
 
-    Map<String, dynamic> requestRegistrationBody = {
-      'itemId': productId,
-      'rating': rating,
-    };
-
-    Map<String, String> requestHeaders = {
-      'accept': '*/*',
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
-
-    try {
-      http.Response response = await http.post(
-        Uri.parse(url),
-        headers: requestHeaders,
-        body: jsonEncode(requestRegistrationBody),
-      );
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        print('---------------rating updated');
-      } else {
-        print('not updated rating');
-      }
-    } catch (e) {}
+  getData(String authToken, String uId, List<Product> products) {
+    this.authToken = authToken;
+    userId = uId;
+    _items = products;
     notifyListeners();
   }
 }

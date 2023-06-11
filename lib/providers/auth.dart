@@ -77,8 +77,8 @@ class Auth with ChangeNotifier {
         await CacheData.setData(key: 'id', value: id);
         await CacheData.setData(
             key: id, value: responseHeaders['authorization']);
-
-        await addressRequest(id, country, city, street, zip);
+        await login(email: email, password: password);
+        await addressRequest(country, city, street, zip);
         return true;
       }
       if (response.statusCode == 400) {
@@ -145,7 +145,7 @@ class Auth with ChangeNotifier {
         await CacheData.setData(
             key: id, value: responseHeaders['authorization']);
 
-        await addressRequest(id, country, city, street, zip);
+        await addressRequest(country, city, street, zip);
         return true;
       }
       if (response.statusCode == 400) {
@@ -184,8 +184,6 @@ class Auth with ChangeNotifier {
         body: jsonEncode(requestBody),
         headers: requestHeaders,
       );
-      print(response.statusCode);
-      print(requestBody);
       if (response.statusCode == 200) {
         var responseHeaders = response.headers;
         await CacheData.deleteItem(key: 'token');
@@ -195,6 +193,8 @@ class Auth with ChangeNotifier {
         token = await CacheData.getData(key: 'token');
         _authenticated = true;
         print("after login token is " + token!);
+        
+        notifyListeners();
         return true;
       }
       if (response.statusCode == 400) {
@@ -218,12 +218,11 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> addressRequest(
-      String id, String country, String city, String street, String zip) async {
-    final addressRequestUrl =
-        "https://ar-store-production.up.railway.app/api/addresses/{$id}";
-    final token = await CacheData.getData(key: 'token');
+      String country, String city, String street, String zip) async {
+    //print(country +" "+ city + " "+ street + " "+ zip );
+    const addressRequestUrl =
+        "https://ar-store-production.up.railway.app/api/addresses";
     Map<String, dynamic> requestAddressBody = {
-      "id": int.parse(id),
       "country": country,
       "city": city,
       "street": street,
@@ -241,7 +240,7 @@ class Auth with ChangeNotifier {
         headers: requestHeaders,
         body: jsonEncode(requestAddressBody),
       );
-
+      print(addressResponse.statusCode);
       if (addressResponse.statusCode == 201) {
         print('address yes........' + addressResponse.statusCode.toString());
       }
@@ -251,7 +250,8 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> fetchAccountInfo() async {
-    final url = "https://ar-store-production.up.railway.app/api/customers/${id}";
+    final url =
+        "https://ar-store-production.up.railway.app/api/customers/${id}";
     final requestHeaders = {
       'accept': '*/*',
       'Authorization': 'Bearer ${token}',

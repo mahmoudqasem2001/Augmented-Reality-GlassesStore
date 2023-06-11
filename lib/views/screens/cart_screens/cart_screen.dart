@@ -22,63 +22,62 @@ class _CartScreenState extends State<CartScreen> {
       backgroundColor: Colors.white,
       body: Consumer<Cart>(builder: (ctx, cart, _) {
         return
-        // cart.isLoadingIndicator
-        //     ? const Center(
-        //         child: CircularProgressIndicator(),
-        //       )
-        //     : 
-             Column(
-                children: [
-                  Card(
-                    margin: const EdgeInsets.all(15),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Total',
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                          const Spacer(),
-                          Chip(
-                            label: Text(
-                              '\$ ${cartProvider.totalAmount.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .primaryTextTheme
-                                      .titleLarge
-                                      ?.color),
-                            ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                          ),
-                          OrderButton(cart: cartProvider),
-                        ],
+            // cart.isLoadingIndicator
+            //     ? const Center(
+            //         child: CircularProgressIndicator(),
+            //       )
+            //     :
+            Column(
+          children: [
+            Card(
+              margin: const EdgeInsets.all(15),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Total',
+                      style: TextStyle(
+                        fontSize: 20,
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (ctx, int index) {
-                        return CartItem(
-                          cart.items.values.toList()[index].id,
-                          cart.items.keys.toList()[index],
-                          cart.items.values.toList()[index].price,
-                          cart.items.values.toList()[index].quantity,
-                          cart.items.values.toList()[index].title,
-                        );
-                      },
-                      itemCount: cart.items.length,
+                    const Spacer(),
+                    Chip(
+                      label: Text(
+                        '\$ ${cartProvider.totalAmount.toStringAsFixed(2)}',
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .titleLarge
+                                ?.color),
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                     ),
-                  ),
-                ],
-              );
+                    OrderButton(cart: cartProvider),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (ctx, int index) {
+                  return CartItem(
+                    cart.items.values.toList()[index].id,
+                    cart.items.keys.toList()[index],
+                    cart.items.values.toList()[index].price,
+                    cart.items.values.toList()[index].quantity,
+                    cart.items.values.toList()[index].title,
+                  );
+                },
+                itemCount: cart.items.length,
+              ),
+            ),
+          ],
+        );
       }),
     );
   }

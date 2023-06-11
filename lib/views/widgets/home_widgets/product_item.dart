@@ -39,9 +39,10 @@ class ProductItem extends StatelessWidget {
             ),
           ),
           child: GestureDetector(
-            onTap: () => Navigator.of(context).pushNamed(
-                ProductDetailScreen.routeName,
-                arguments: product.id),
+            onTap: () {
+              Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                  arguments: product.id);
+            },
             child: Hero(
                 tag: product.id!,
                 child: FadeInImage(
