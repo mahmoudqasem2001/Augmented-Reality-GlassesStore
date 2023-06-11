@@ -1,98 +1,119 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../models/cart_item.dart';
+import 'package:shop_app/core/api/status_code.dart';
+import 'package:shop_app/models/brand.dart';
+import 'package:shop_app/models/store.dart';
+import 'package:shop_app/providers/product_provider.dart';
+import 'package:shop_app/shared/constants/constants.dart';
 import '../models/order_item.dart';
+import 'package:http/http.dart' as http;
+import '../models/order.dart' as order;
 
 class Orders with ChangeNotifier {
-  List<OrderItem> _orders = [];
-  late String authToken;
-  // String? userId;
+  List<order.Order> _orders = [];
 
-  getData(String authTok, List<OrderItem> orders) {
-    authToken = authTok;
-    // userId = uId;
-    _orders = orders;
-    notifyListeners();
-  }
-
-  List<OrderItem> get orders {
+  List<order.Order> get orders {
     return [..._orders];
   }
 
-  // Future<void> fetchAndSetOrders() async {
-  //   // final url =
-  //   //     'https://shop-43d63-default-rtdb.firebaseio.com/orders/$userId.json?auth=$authToken';
+  Future<void> postOrder(List<OrderItem> orderItems, int quantity) async {
+    final url =
+        Uri.parse('https://ar-store-production.up.railway.app/api/orders');
 
-  //   try {
-  //     final res = await http.get(Uri.parse(url));
-  //     final extractedData = json.decode(res.body) as Map<String, dynamic>;
-  //     if (extractedData !=true) {
-  //       return;
-  //     }
+    final headers = {
+      'accept': '*/*',
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
 
-  //     final List<OrderItem> loadedOrders = [];
-  //     extractedData.forEach((orderId, orderData) {
-  //       loadedOrders.add(OrderItem(
-  //         id: orderId,
-  //         amount: orderData['amount'],
-  //         dateTime: DateTime.parse(orderData['dateTime']),
-  //         products: (orderData['products'] as List<dynamic>)
-  //             .map((item) => CartItem(
-  //                   id: item['id'],
-  //                   price: item['price'],
-  //                   quantity: item['quantity'],
-  //                   title: item['title'],
-  //                 ))
-  //             .toList(),
-  //       ));
-  //     });
-  //     _orders = loadedOrders.reversed.toList();
-  //     notifyListeners();
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+    List<Map<String, dynamic>> listOfOrders = [];
+    for (var element in orderItems) {
+      listOfOrders.add({
+        'itemId': element.item.id,
+        'quantity': element.quantity,
+      });
+    }
 
-  Future<void> addOrder(List<CartItem> cartProduct, double total) async {
-    final timeStamp = DateTime.now();
+    final body = {'orderItems': listOfOrders};
 
-    _orders.insert(
-      0,
-      OrderItem(amount: total, products: cartProduct, dateTime: timeStamp),
-    );
-    //   final url =
-    //       'https://shop-43d63-default-rtdb.firebaseio.com/orders/$userId.json?auth=$authToken';
+    try {
+      final response =
+          await http.post(url, headers: headers, body: json.encode(body));
+      if (response.statusCode == StatusCode.created) {
+        // Request successful created
+        print('order Created');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
-    //   try {
-    //     // add the orders to server
+  Future<void> getOrders() async {
+    final url =
+        Uri.parse('https://ar-store-production.up.railway.app/api/orders');
 
-    //     final timeStamp = DateTime.now();
-    //     final res = await http.post(Uri.parse(url),
-    //         body: json.encode({
-    //           'amount': total,
-    //           'dateTime': timeStamp.toIso8601String(),
-    //           'products': cartProduct
-    //               .map((cp) => {
-    //                     'id': cp.id,
-    //                     'title': cp.title,
-    //                     'quantity': cp.quantity,
-    //                     'price': cp.price,
-    //                   })
-    //               .toList(),
-    //         }));
-    //add the orders to my app (internal)
+    final headers = {
+      'accept': '*/*',
+      'Authorization': 'Bearer $token',
+    };
 
-    //   _orders.insert(
-    //       0,
-    //       OrderItem(
-    //           id: json.decode(res.body)['name'],
-    //           amount: total,
-    //           dateTime: timeStamp,
-    //           products: cartProduct));
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == StatusCode.ok) {
+        final responseData =
+            json.decode(response.body) as List<Map<String, dynamic>>;
+        print(responseData);
+        
+        List<OrderItem> loadedOrderItems = [];
+        for (var responseOrder in responseData) {
+          for (var responseOrderItem in responseOrder['orderItems']) {
+            loadedOrderItems.add(OrderItem(
+                quantity: responseOrderItem['quantity'],
+                price: responseOrderItem['price'],
+                item: Product(
+                  id: responseOrderItem['item']['id'],
+                  price: responseOrderItem['item']['price'],
+                  rating: responseOrderItem['item']['rating'],
+                  store: Store(
+                    id: responseOrderItem['item']['store']['id'],
+                    name: responseOrderItem['item']['store']['name'],
+                    phoneNumber: responseOrderItem['item']['store']
+                        ['phoneNumber'],
+                  ),
+                  brand: Brand(
+                    id: responseOrderItem['item']['brand']['id'],
+                    name: responseOrderItem['item']['brand']['name'],
+                    countryOfOrigin: responseOrderItem['item']['brand']
+                        ['countryOfOrigin'],
+                  ),
+                  model: responseOrderItem['item']['model'],
+                  color: responseOrderItem['item']['color'],
+                  type: responseOrderItem['item']['type'],
+                  gender: responseOrderItem['item']['gender'],
+                  border: responseOrderItem['item']['border'],
+                  shape: responseOrderItem['item']['shape'],
+                )));
+          }
+        }
 
-    //   notifyListeners();
-    // } catch (e) {
-    //   rethrow;
-    // }
+        List<order.Order> loadedOrders = [];
+        for (var responseOrder in responseData) {
+          loadedOrders.add(
+            order.Order(
+              id: responseOrder['id'],
+              orderStatus: responseOrder['orderStatus'],
+              discount: responseOrder['discount'],
+              totalPrice: responseOrder['totalPrice'],
+              orderItems: loadedOrderItems,
+            ),
+          );
+        }
+        _orders = loadedOrders;
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    notifyListeners();
   }
 }

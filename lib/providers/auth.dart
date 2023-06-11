@@ -183,7 +183,7 @@ class Auth with ChangeNotifier {
     try {
       http.Response response = await http.post(
         Uri.parse(url),
-        body: jsonEncode(requestBody),
+        body: json.encode(requestBody),
         headers: requestHeaders,
       );
       if (response.statusCode == StatusCode.ok) {
