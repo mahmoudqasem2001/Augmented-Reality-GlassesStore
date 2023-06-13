@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/views/screens/home_screens/home_screen.dart';
 import 'package:shop_app/views/widgets/home_widgets/image_slider.dart';
 import '../../../providers/products_provider.dart';
-import '../../widgets/home_widgets/product_grid.dart';
+import '../../widgets/products_widgets/product_grid.dart';
 
 class ProductOverViewScreen extends StatefulWidget {
   static const routeName = '/product-overview';
@@ -20,16 +20,16 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   @override
   void initState() {
     super.initState();
-    final productsProvider = Provider.of<Products>(context, listen: false);
-    final itemFetched = productsProvider.itemsFetched;
-    if (itemFetched == true) {
-      return;
-    }
-    // productsProvider.setIsLoadingIndicator(true);
+    // final productsProvider = Provider.of<Products>(context, listen: false);
+    // final itemFetched = productsProvider.itemsFetched;
+    // if (itemFetched == true) {
+    //   return;
+    // }
+    // // productsProvider.setIsLoadingIndicator(true);
 
-    productsProvider.fetchAndSetProducts();
-    // .then((_) => productsProvider.setIsLoadingIndicator(false))
-    // .catchError((_) => productsProvider.setIsLoadingIndicator(true));
+    // productsProvider.fetchAndSetProducts();
+    // // .then((_) => productsProvider.setIsLoadingIndicator(false))
+    // // .catchError((_) => productsProvider.setIsLoadingIndicator(true));
   }
 
   @override

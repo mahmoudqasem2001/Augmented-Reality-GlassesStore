@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/auth.dart';
 import '../../../providers/cart_provider.dart';
 import '../../../providers/products_provider.dart';
 
@@ -15,6 +16,8 @@ class CartItem extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
+    final cartProvider = Provider.of<Cart>(context, listen: false);
     final imageIrl = Provider.of<Products>(context, listen: false)
         .findById(productId!)
         .imageUrls![0];
@@ -55,40 +58,51 @@ class CartItem extends StatelessWidget {
         );
       },
       onDismissed: (direction) {
-        Provider.of<Cart>(context, listen: false).removeItem(productId!);
+        authProvider
+            .fetchAccountInfo()
+            .then((value) => authProvider.setAuthentucated(value));
+        if (authProvider.authenticated == true) {
+          cartProvider.removeFromCart(productId!);
+        } else {
+          cartProvider.removeItem(productId!);
+        }
       },
       key: ValueKey(id),
-      child: Card(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 4,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(25.0),
-              child: Image.network(imageIrl),
+      child: Consumer<Cart>(
+        builder: (ctx, cartItem, _) {
+          return Card(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 4,
             ),
-            title: Text(title!),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: ListTile(
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(25.0),
+                  child: Image.network(imageIrl),
                 ),
-                Text(
-                  'Price \$$price',
+                title: Text(title!),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Price \$$price',
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text('Total \$${(price! * quantity!)}'),
+                  ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text('Total \$${(price! * quantity!)}'),
-              ],
+                trailing: Text('$quantity x'),
+              ),
             ),
-            trailing: Text('$quantity x'),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

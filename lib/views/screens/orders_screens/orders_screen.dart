@@ -16,31 +16,13 @@ class OrdersScreen extends StatelessWidget {
         title: const Text("Your Order"),
       ),
       drawer: const AppDrawer(),
-      body:
-          // FutureBuilder(
-          //   builder: (ctx, AsyncSnapshot snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return const CircularProgressIndicator();
-          //     } else {
-          //       if (snapshot.error != null) {
-          //         return const Center(
-          //           child: Text('An error occured!'),
-          //         );
-          //       } else {
-          //         return
-          Consumer<Orders>(
-        builder: (ctx, orderData, child) => ListView.builder(
+      body: Consumer<Orders>(
+        builder: (ctx, ordersProvider, child) => ListView.builder(
           itemBuilder: (BuildContext context, int index) =>
-              OrderItem(orderData.orders[index]),
-          itemCount: orderData.orders.length,
+              OrderItem(ordersProvider.orders[index]),
+          itemCount: ordersProvider.orders.length,
         ),
       ),
-      //         );
-      //       }
-      //     }
-      //   },
-      //   future: Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
-      // ),
     );
   }
 }

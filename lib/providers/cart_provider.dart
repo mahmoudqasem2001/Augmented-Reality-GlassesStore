@@ -41,7 +41,7 @@ class Cart with ChangeNotifier {
         _items.update(
             productId,
             (existingCartItem) => CartItem(
-                  id: existingCartItem.id,
+                  id: productId.toString(),
                   title: existingCartItem.title,
                   price: existingCartItem.price,
                   quantity: existingCartItem.quantity! + prodQuantity,
@@ -94,8 +94,8 @@ class Cart with ChangeNotifier {
       );
       if (response.statusCode == 201) {
         print('---------------product added');
-        //_isLoadingIndicator = true;
-        addItem(productId, price, title, quantity);
+        _isLoadingIndicator = true;
+        //addItem(productId, price, title, quantity);
       } else {
         print('not added');
       }
@@ -123,6 +123,7 @@ class Cart with ChangeNotifier {
 
       if (response.statusCode == 200) {
         print('product deleted' + response.statusCode.toString());
+        removeItem(prodId);
       }
     } catch (e) {}
   }
@@ -152,7 +153,7 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchCartItems() async {
+  Future<bool> fetchCartItems() async {
     const url = 'https://ar-store-production.up.railway.app/api/cartItems';
     Map<String, String> requestHeaders = {
       'accept': '*/*',
@@ -162,25 +163,29 @@ class Cart with ChangeNotifier {
     try {
       http.Response response =
           await http.get(Uri.parse(url), headers: requestHeaders);
-      print('Fetch cart ' + response.statusCode.toString());
 
       if (response.statusCode == 200) {
-        final responseData =
-            json.decode(response.body) as List<Map<String, dynamic>>;
-        print(response.body);
+        print('Fetch cart ' + response.statusCode.toString());
+        final responseData = json.decode(response.body);
         for (var element in responseData) {
           _items.putIfAbsent(
             element['item']['id'],
             () => CartItem(
-                id: DateTime.now().toIso8601String(),
+                id: element['item']['id'].toString(),
                 title: element['item']['brand']['name'],
                 quantity: element['quantity'],
                 price: element['item']['price']),
           );
         }
         //_isLoadingIndicator = false;
+        print(_items.length);
+        _isLoadingIndicator = false;
+        notifyListeners();
+        return true;
       }
     } catch (e) {}
+    _isLoadingIndicator = true;
     notifyListeners();
+    return false;
   }
 }

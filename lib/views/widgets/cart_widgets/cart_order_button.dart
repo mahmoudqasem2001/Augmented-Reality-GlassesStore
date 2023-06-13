@@ -41,8 +41,8 @@ class _OrderButtonState extends State<OrderButton> {
                     TextButton(
                         onPressed: () async {
                           await Provider.of<Orders>(context, listen: false)
-                              .addOrder(widget.cart.items.values.toList(),
-                                  widget.cart.totalAmount);
+                              .postOrder(widget.cart.items.values.toList(),
+                                  );
                           //print(widget.cart.items.values.toList().first.price);
                           setState(() {
                             _isloading = false;

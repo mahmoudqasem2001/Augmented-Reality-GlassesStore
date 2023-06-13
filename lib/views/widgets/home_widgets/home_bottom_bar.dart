@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart_provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
+import '../../../providers/auth.dart';
 import '../cart_widgets/badge.dart' as my_badge;
 
 class HomeBottomBar extends StatelessWidget {
@@ -45,8 +46,14 @@ class HomeBottomBar extends StatelessWidget {
         ),
       ],
       onTap: (index) {
+        if (index == 1) {
+          final authProvider = Provider.of<Auth>(context, listen: false);
+          final cartProvider = Provider.of<Cart>(context, listen: false);
+          if (authProvider.authenticated == true) {
+            cartProvider.fetchCartItems();
+          }
+        }
         productsProvider.setBottomBarSelectedIndex(index);
-        
       },
     );
   }

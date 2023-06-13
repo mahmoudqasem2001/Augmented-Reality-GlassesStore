@@ -52,6 +52,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   Consumer<Auth>(
                     builder: (_, auth, child) {
+                      
                       return auth.authenticated
                           ? ProfileOptions()
                           : AuthDialog();

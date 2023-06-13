@@ -120,7 +120,7 @@ class Products with ChangeNotifier {
     try {
       final response = await http.get(
           Uri.parse('https://ar-store-production.up.railway.app/api/glasses'));
-      print(response.statusCode);
+      // print(response.statusCode);
       if (response.statusCode == StatusCode.ok) {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
         List<Product> loadedProducts = [];
@@ -154,6 +154,7 @@ class Products with ChangeNotifier {
         }
         _items = loadedProducts;
         _itemsFetched = true;
+        _isLoadingIndicator = false;
       } else {
         throw Exception('Failed to fetch items');
       }

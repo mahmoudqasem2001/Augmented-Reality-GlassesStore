@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import '../../../models/order_item.dart' as ord;
+import '../../../models/order.dart';
 
 class OrderItem extends StatelessWidget {
-  final ord.OrderItem order;
+  final Order order;
 
   const OrderItem(this.order, {Key? key}) : super(key: key);
 
@@ -12,16 +11,16 @@ class OrderItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: ExpansionTile(
-        title: Text('\$${order.amount}'),
+        title: Text('\$${order.totalPrice}}'),
         subtitle: Text(
-          DateFormat('dd/MM/yyyy hh:mm').format(order.dateTime),
+          order.orderStatus,
         ),
-        children: order.products
+        children: order.orderItems
             .map((prod) => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      prod.title!,
+                      prod.item.brand!.name!,
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),

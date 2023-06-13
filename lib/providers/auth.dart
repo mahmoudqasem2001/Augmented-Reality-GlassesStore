@@ -78,8 +78,8 @@ class Auth with ChangeNotifier {
         await CacheData.setData(key: 'id', value: id);
         await CacheData.setData(
             key: id, value: responseHeaders['authorization']);
-        await login(email: email, password: password);
-        await addressRequest(country, city, street, zip);
+        login(email: email, password: password);
+        addressRequest(country, city, street, zip);
         return true;
       }
       if (response.statusCode == StatusCode.badRequest) {
@@ -146,8 +146,8 @@ class Auth with ChangeNotifier {
         await CacheData.setData(
             key: id, value: responseHeaders['authorization']);
 
-        await login(email: email, password: password);
-        await addressRequest(country, city, street, zip);
+        login(email: email, password: password);
+        addressRequest(country, city, street, zip);
         return true;
       }
       if (response.statusCode == StatusCode.badRequest) {
@@ -195,7 +195,7 @@ class Auth with ChangeNotifier {
         token = await CacheData.getData(key: 'token');
         _authenticated = true;
         print("after login token is " + token!);
-        
+
         notifyListeners();
         return true;
       }
@@ -251,7 +251,7 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAccountInfo() async {
+  Future<bool> fetchAccountInfo() async {
     final url =
         "https://ar-store-production.up.railway.app/api/customers/${id}";
     final requestHeaders = {
@@ -280,6 +280,7 @@ class Auth with ChangeNotifier {
           // ),
         );
         notifyListeners();
+        return true;
       } else if (response.statusCode == StatusCode.forbidden) {
         print('cant authnticate');
         _authenticated = false;
@@ -287,6 +288,8 @@ class Auth with ChangeNotifier {
     } catch (e) {
       _customer = Customer(id: 0);
     }
+
     notifyListeners();
+    return false;
   }
 }

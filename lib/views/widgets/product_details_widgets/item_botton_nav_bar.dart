@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/auth.dart';
 import '../../../providers/cart_provider.dart';
 import '../../../providers/products_provider.dart';
 
@@ -65,18 +66,25 @@ class ItemBottomNavBar extends StatelessWidget {
                     if (productsProvider.productQuantity == 0) {
                       return;
                     }
-                    // cart.addItem(
-                    //     productId,
-                    //     loadedProduct.price,
-                    //     loadedProduct.brand!.name,
-                    //     productsProvider.productQuantity);
-                    cart.addToCart(
-                      loadedProduct.id!,
-                      productsProvider.productQuantity,
-                      loadedProduct.price!,
-                      loadedProduct.brand!.name!,
-                      
-                    );
+                    final authProvider =
+                        Provider.of<Auth>(context, listen: false);
+                    authProvider
+                        .fetchAccountInfo()
+                        .then((value) => authProvider.setAuthentucated(value));
+                    if (authProvider.authenticated == true) {
+                      cart.addToCart(
+                        loadedProduct.id!,
+                        productsProvider.productQuantity,
+                        loadedProduct.price!,
+                        loadedProduct.brand!.name!,
+                      );
+                    } else {
+                      cart.addItem(
+                          productId,
+                          loadedProduct.price,
+                          loadedProduct.brand!.name,
+                          productsProvider.productQuantity);
+                    }
                     productsProvider.setProductQuantity(0);
                   },
                   child: Column(

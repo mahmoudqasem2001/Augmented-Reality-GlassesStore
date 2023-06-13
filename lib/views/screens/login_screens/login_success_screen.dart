@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/views/screens/home_screens/home_screen.dart';
-
-import '../../../providers/cart_provider.dart';
 
 class LoginSuccessScreen extends StatelessWidget {
   const LoginSuccessScreen({Key? key}) : super(key: key);
@@ -38,6 +37,10 @@ class LoginSuccessScreen extends StatelessWidget {
                 //     .then((_) => cartProvider.setIsLoadingIndicator(false))
                 //     .catchError(
                 //         (_) => cartProvider.setIsLoadingIndicator(true));
+                final authProvider = Provider.of<Auth>(context, listen: false);
+                authProvider
+                    .fetchAccountInfo()
+                    .then((value) => authProvider.setAuthentucated(value));
                 Navigator.of(context)
                     .pushReplacementNamed(HomeScreen.routeName);
               },

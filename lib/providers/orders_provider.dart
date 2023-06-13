@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shop_app/core/api/status_code.dart';
 import 'package:shop_app/models/brand.dart';
+import 'package:shop_app/models/cart_item.dart';
 import 'package:shop_app/models/store.dart';
 import 'package:shop_app/providers/product_provider.dart';
 import 'package:shop_app/shared/constants/constants.dart';
@@ -17,7 +18,7 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  Future<void> postOrder(List<OrderItem> orderItems, int quantity) async {
+  Future<void> postOrder(List<CartItem> orderItems) async {
     final url =
         Uri.parse('https://ar-store-production.up.railway.app/api/orders');
 
@@ -30,7 +31,7 @@ class Orders with ChangeNotifier {
     List<Map<String, dynamic>> listOfOrders = [];
     for (var element in orderItems) {
       listOfOrders.add({
-        'itemId': element.item.id,
+        'itemId': element.id,
         'quantity': element.quantity,
       });
     }
