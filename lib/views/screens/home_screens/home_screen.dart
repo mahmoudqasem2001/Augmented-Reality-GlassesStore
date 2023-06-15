@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/auth.dart';
+import 'package:shop_app/shared/constants/constants.dart';
 import 'package:shop_app/views/widgets/drawer/end_drawer/end_drawer.dart';
 import '../../widgets/drawer/app_drawer/app_drawer.dart';
 import '../../widgets/cart_widgets/badge.dart' as my_badge;
@@ -34,13 +35,22 @@ class _HomeScreenState extends State<HomeScreen> {
     final productsProvider = Provider.of<Products>(context, listen: false);
 
     productsProvider.fetchAndSetProducts();
-
-    authProvider.fetchAccountInfo().then((value) {
+    if(authProvider.userType== User.customer){
+      authProvider.fetchCustomerAccountInfo().then((value) {
       authProvider.setAuthentucated(value);
       if (authProvider.authenticated == true) {
         cartProvider.fetchCartItems();
       }
     });
+    }else if(authProvider.userType== User.store){
+      authProvider.fetchStoreAccountInfo().then((value) {
+      authProvider.setAuthentucated(value);
+      if (authProvider.authenticated == true) {
+        cartProvider.fetchCartItems();
+      }
+    });
+    }
+    
   }
 
   @override

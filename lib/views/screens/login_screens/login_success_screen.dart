@@ -8,6 +8,8 @@ class LoginSuccessScreen extends StatelessWidget {
   static const routeName = '/login_success';
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
@@ -30,17 +32,6 @@ class LoginSuccessScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
             child: MaterialButton(
               onPressed: () {
-                // final cartProvider = Provider.of<Cart>(context);
-                // cartProvider.setIsLoadingIndicator(true);
-                // cartProvider
-                //     .fetchCartItems()
-                //     .then((_) => cartProvider.setIsLoadingIndicator(false))
-                //     .catchError(
-                //         (_) => cartProvider.setIsLoadingIndicator(true));
-                final authProvider = Provider.of<Auth>(context, listen: false);
-                authProvider
-                    .fetchAccountInfo()
-                    .then((value) => authProvider.setAuthentucated(value));
                 Navigator.of(context)
                     .pushReplacementNamed(HomeScreen.routeName);
               },

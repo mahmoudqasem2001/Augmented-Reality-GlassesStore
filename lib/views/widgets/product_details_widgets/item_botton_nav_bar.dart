@@ -12,7 +12,7 @@ class ItemBottomNavBar extends StatelessWidget {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
         .findById(productId as int);
-    final cart = Provider.of<Cart>(context, listen: false);
+    final cartProvider = Provider.of<Cart>(context, listen: false);
     var productsProvider = Provider.of<Products>(context, listen: false);
     return BottomAppBar(
       child: Container(
@@ -69,17 +69,17 @@ class ItemBottomNavBar extends StatelessWidget {
                     final authProvider =
                         Provider.of<Auth>(context, listen: false);
                     authProvider
-                        .fetchAccountInfo()
+                        .fetchCustomerAccountInfo()
                         .then((value) => authProvider.setAuthentucated(value));
                     if (authProvider.authenticated == true) {
-                      cart.addToCart(
+                      cartProvider.addToCartRequest(
                         loadedProduct.id!,
                         productsProvider.productQuantity,
                         loadedProduct.price!,
                         loadedProduct.brand!.name!,
                       );
                     } else {
-                      cart.addItem(
+                      cartProvider.addItem(
                           productId,
                           loadedProduct.price,
                           loadedProduct.brand!.name,
@@ -87,7 +87,7 @@ class ItemBottomNavBar extends StatelessWidget {
                     }
                     productsProvider.setProductQuantity(0);
                   },
-                  child: Column(
+                  child:const Column(
                     children: [
                       Text(
                         'Add To Cart',

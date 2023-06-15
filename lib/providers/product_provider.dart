@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+
 import 'package:shop_app/models/store.dart';
 
 import '../models/brand.dart';
@@ -10,6 +11,7 @@ class Product with ChangeNotifier {
   final Brand? brand;
   final String? model;
   final double? price;
+  final int? quantity;
   final double? rating;
   final List<String>? imageUrls;
   final String? color;
@@ -24,6 +26,7 @@ class Product with ChangeNotifier {
     this.brand,
     this.model,
     this.price,
+    this.quantity,
     this.rating,
     this.imageUrls,
     this.color,

@@ -10,19 +10,25 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ordersProvider = Provider.of<Orders>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: const Text("Your Order"),
       ),
       drawer: const AppDrawer(),
-      body: Consumer<Orders>(
-        builder: (ctx, ordersProvider, child) => ListView.builder(
-          itemBuilder: (BuildContext context, int index) =>
-              OrderItem(ordersProvider.orders[index]),
-          itemCount: ordersProvider.orders.length,
-        ),
-      ),
+      body: ordersProvider.isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Consumer<Orders>(
+              builder: (ctx, ordersProvider, child) => ListView.builder(
+                itemBuilder: (BuildContext context, int index) =>
+                    OrderItem(ordersProvider.orders[index]),
+                itemCount: ordersProvider.orders.length,
+              ),
+            ),
     );
   }
 }

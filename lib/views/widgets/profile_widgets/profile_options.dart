@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/cache/cacheHelper.dart';
 import 'package:shop_app/providers/auth.dart';
+import 'package:shop_app/providers/products_provider.dart';
 import 'package:shop_app/views/screens/helping_center_screens/helping_center_screen.dart';
-import 'package:shop_app/views/screens/profile_screens/my_account_screen.dart';
+import 'package:shop_app/views/screens/profile_screens/store_account_screen.dart';
+import 'package:shop_app/views/screens/profile_screens/customer_account_screen.dart';
+
+import '../../../shared/constants/constants.dart';
 
 class ProfileOptions extends StatelessWidget {
   const ProfileOptions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
+    final productsProvider = Provider.of<Products>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(children: [
@@ -25,8 +33,15 @@ class ProfileOptions extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Provider.of<Auth>(context, listen: false).fetchAccountInfo();
-            Navigator.of(context).pushNamed(MyAccountScreen.routeName);
+            if (authProvider.userType == User.customer) {
+              authProvider.fetchCustomerAccountInfo();
+              Navigator.of(context).pushNamed(CustomerAccountScreen.routeName);
+            } else if (authProvider.userType == User.store) {
+              authProvider.fetchStoreAccountInfo();
+              productsProvider.getProductsByStoreId(authProvider.store.id!);
+              Navigator.of(context).pushNamed(StoreAccountScreen.routeName,
+                  arguments: authProvider.store.id);
+            }
           },
           child: const Row(
             children: [
@@ -108,8 +123,11 @@ class ProfileOptions extends StatelessWidget {
               const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             ),
           ),
-          onPressed: () {
+          onPressed: () async {
+            Provider.of<Auth>(context, listen: false)
+                .setLoadingIndicator(false);
             Provider.of<Auth>(context, listen: false).setAuthentucated(false);
+            await CacheData.deleteItem(key: 'token');
           },
           child: const Row(
             children: [

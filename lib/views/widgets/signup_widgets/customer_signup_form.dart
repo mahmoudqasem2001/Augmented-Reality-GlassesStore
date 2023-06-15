@@ -34,33 +34,23 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) {
+      Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
       return;
     }
     FocusScope.of(context).unfocus();
     _formKey.currentState!.save();
 
-    Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
-
     try {
-       await Provider.of<Auth>(context, listen: false)
-          .customerRegister(
-              userName: name.text,
-              userPhoneNumber: '0' + phoneNumber.text,
-              country: country.text,
-              city: city.text,
-              street: street.text,
-              zip: zip.text,
-              userGender: gender.text,
-              email: email.text,
-              password: password.text);
-
-      final authenticated= Provider.of<Auth>(context, listen: false).authenticated;
-
-      if (authenticated == true) {
-        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-      } else {
-        print('something wrong');
-      }
+      await Provider.of<Auth>(context, listen: false).customerRegister(
+          userName: name.text,
+          userPhoneNumber: '0' + phoneNumber.text,
+          country: country.text,
+          city: city.text,
+          street: street.text,
+          zip: zip.text,
+          userGender: gender.text,
+          email: email.text,
+          password: password.text);
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXIST')) {
@@ -81,7 +71,6 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
     }
-    Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
   }
 
   void _showErrorDialog(String errorMessage) {
@@ -483,7 +472,18 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
             }
+
+            final authProvider = Provider.of<Auth>(context, listen: false);
+            authProvider.setLoadingIndicator(true);
+
             _submit();
+
+            if (authProvider.authenticated == true) {
+              authProvider.setLoadingIndicator(false);
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+            } else {
+              print('something wrong');
+            }
           },
           minWidth: 200,
           height: 50,
@@ -491,7 +491,9 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
           child: Consumer<Auth>(
             builder: (_, auth, child) {
               return auth.isLoading
-                  ? CircularProgressIndicator(color: Colors.white,)
+                  ? CircularProgressIndicator(
+                      color: Colors.white,
+                    )
                   : const Text(
                       'Continue',
                       style: TextStyle(color: Colors.white, fontSize: 16),

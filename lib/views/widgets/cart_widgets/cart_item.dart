@@ -58,11 +58,8 @@ class CartItem extends StatelessWidget {
         );
       },
       onDismissed: (direction) {
-        authProvider
-            .fetchAccountInfo()
-            .then((value) => authProvider.setAuthentucated(value));
         if (authProvider.authenticated == true) {
-          cartProvider.removeFromCart(productId!);
+          cartProvider.removeFromCartRequest(productId!);
         } else {
           cartProvider.removeItem(productId!);
         }

@@ -53,7 +53,7 @@ class _CartScreenState extends State<CartScreen> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                           ),
-                          OrderButton(cart: cartProvider),
+                          OrderButton(),
                         ],
                       ),
                     ),

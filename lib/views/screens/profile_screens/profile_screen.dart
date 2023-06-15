@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/cache/cacheHelper.dart';
-import 'package:shop_app/shared/constants/constants.dart';
 import 'package:shop_app/views/widgets/profile_widgets/profile_options.dart';
 import '../../../providers/auth.dart';
 import '../../widgets/auth_common_widgets/auth_dialog.dart';

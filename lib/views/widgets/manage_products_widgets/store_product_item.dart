@@ -3,18 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
 import 'package:shop_app/views/screens/edit_product_screens/edit_product_screen.dart';
 
-class UserProductItem extends StatelessWidget {
+class StoreProductItem extends StatelessWidget {
   final int id;
   final String title;
   final String imageUrl;
 
-  const UserProductItem(this.id, this.title, this.imageUrl, {Key? key}) : super(key: key);
+  const StoreProductItem(this.id, this.title, this.imageUrl, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
     return ListTile(
-    tileColor: Colors.grey[200],
+      tileColor: Colors.grey[200],
       title: Text(title),
       leading: CircleAvatar(
         backgroundImage: NetworkImage(imageUrl),
@@ -25,12 +26,12 @@ class UserProductItem extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                 Navigator.of(context).pushNamed(
-                EditProductScreen.routeName,
-                arguments: id,
-              );
+                Navigator.of(context).pushNamed(
+                  EditProductScreen.routeName,
+                  arguments: id,
+                );
               },
-              icon:const Icon(Icons.edit),
+              icon: const Icon(Icons.edit),
             ),
             IconButton(
               onPressed: () async {
@@ -39,7 +40,7 @@ class UserProductItem extends StatelessWidget {
                       .deleteProduct(id);
                 } catch (e) {
                   scaffold.showSnackBar(
-                  const  SnackBar(
+                    const SnackBar(
                       content: Text(
                         'Deleting failed',
                         textAlign: TextAlign.center,
@@ -49,7 +50,7 @@ class UserProductItem extends StatelessWidget {
                 }
               },
               color: Theme.of(context).colorScheme.error,
-              icon:const Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
             ),
           ],
         ),

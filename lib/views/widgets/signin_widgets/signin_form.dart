@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/cart_provider.dart';
 import '../../../providers/auth.dart';
+import '../../../shared/constants/constants.dart';
 import '../../screens/login_screens/login_success_screen.dart';
 import '../auth_common_widgets/form_error.dart';
-import '../../../providers/cart_provider.dart';
+
+//enum User { customer, store }
 
 class SignForm extends StatefulWidget {
   const SignForm({Key? key}) : super(key: key);
@@ -14,34 +17,28 @@ class SignForm extends StatefulWidget {
 }
 
 class _SignFormState extends State<SignForm> {
+  User _userType = User.customer;
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
   String password = '';
   final List<String> errors = [];
 
-  _submit() {
+  _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
+      Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
       return;
     }
     FocusScope.of(context).unfocus();
     _formKey.currentState!.save();
 
-    Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
-
     try {
-      bool authenticated = false;
-      Provider.of<Auth>(context, listen: false)
+      final authProvider = Provider.of<Auth>(context, listen: false);
+      authProvider.setLoadingIndicator(true);
+      await authProvider
           .login(
               email: _emailController.text, password: _passwordController.text)
-          .then((value) => authenticated = true);
-
-     
-        Navigator.of(context)
-            .pushReplacementNamed(LoginSuccessScreen.routeName);
-        Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
-        Provider.of<Cart>(context, listen: false).fetchCartItems();
-     
+          .then((value) => authProvider.setAuthentucated(value));
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXIST')) {
@@ -84,11 +81,49 @@ class _SignFormState extends State<SignForm> {
       key: _formKey,
       child: Column(
         children: [
+          Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                children: [
+                  Text("Customer"),
+                  Radio<User>(
+                      value: User.customer,
+                      groupValue: _userType,
+                      onChanged: (User? userType) {
+                        setState(() {
+                          _userType = userType!;
+                        });
+                      }),
+                ],
+              ),
+              Column(
+                children: [
+                  Text("Store"),
+                  Radio<User>(
+                      value: User.store,
+                      groupValue: _userType,
+                      onChanged: (User? userType) {
+                        setState(() {
+                          _userType = userType!;
+                        });
+                      }),
+                ],
+              ),
+            ],
+          )),
+          SizedBox(
+            height: 40,
+          ),
           buildEmailFormField(),
           const SizedBox(
             height: 20,
           ),
           buildPasswordFormField(),
+          SizedBox(
+            height: 20,
+          ),
           FormError(errors: errors),
           submitSignInButton(),
         ],
@@ -170,11 +205,29 @@ class _SignFormState extends State<SignForm> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(28),
           child: MaterialButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
               }
-              _submit();
+              await _submit(context);
+              final cartProvider = Provider.of<Cart>(context, listen: false);
+              if (auth.authenticated == true) {
+                auth.setLoadingIndicator(false);
+                if (_userType == User.customer) {
+                  auth
+                      .fetchCustomerAccountInfo()
+                      .then((value) => auth.setAuthentucated(value));
+                  auth.setUserType(_userType);
+                } else if (_userType == User.store) {
+                  auth
+                      .fetchStoreAccountInfo()
+                      .then((value) => auth.setAuthentucated(value));
+                  auth.setUserType(_userType);
+                }
+                cartProvider.fetchCartItems();
+                Navigator.of(context)
+                    .pushReplacementNamed(LoginSuccessScreen.routeName);
+              }
             },
             minWidth: 200,
             height: 50,
@@ -182,7 +235,7 @@ class _SignFormState extends State<SignForm> {
             child: Consumer<Auth>(
               builder: (_, auth, child) {
                 return auth.isLoading
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                         color: Colors.white,
                       )
                     : const Text(

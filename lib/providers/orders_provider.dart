@@ -13,9 +13,16 @@ import '../models/order.dart' as order;
 
 class Orders with ChangeNotifier {
   List<order.Order> _orders = [];
+  bool _isLoading = false;
+  get isLoading => _isLoading;
 
   List<order.Order> get orders {
     return [..._orders];
+  }
+
+  void setLoadingIndicator(bool isLoading) {
+    _isLoading = isLoading;
+    notifyListeners();
   }
 
   Future<void> postOrder(List<CartItem> orderItems) async {
@@ -65,10 +72,10 @@ class Orders with ChangeNotifier {
         final responseData =
             json.decode(response.body) as List<Map<String, dynamic>>;
         print(responseData);
-        
+
         List<OrderItem> loadedOrderItems = [];
         for (var responseOrder in responseData) {
-          for (var responseOrderItem in responseOrder['orderItems']) {
+          for (var responseOrderItem in responseOrder['orderItems'] as List<Map<String, dynamic>>) {
             loadedOrderItems.add(OrderItem(
                 quantity: responseOrderItem['quantity'],
                 price: responseOrderItem['price'],
@@ -110,6 +117,7 @@ class Orders with ChangeNotifier {
             ),
           );
         }
+        _isLoading = false;
         _orders = loadedOrders;
       }
     } catch (e) {

@@ -5,8 +5,9 @@ import '../../../providers/cart_provider.dart';
 import '../../../providers/orders_provider.dart';
 
 class OrderButton extends StatefulWidget {
-  final Cart cart;
-  const OrderButton({Key? key, required this.cart}) : super(key: key);
+  const OrderButton({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<OrderButton> createState() => _OrderButtonState();
@@ -16,8 +17,9 @@ class _OrderButtonState extends State<OrderButton> {
   bool _isloading = false;
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<Cart>(context, listen: false);
     return TextButton(
-      onPressed: (widget.cart.totalAmount <= 0 || _isloading == true)
+      onPressed: (cartProvider.totalAmount <= 0 || _isloading == true)
           ? null
           : () async {
               setState(() {
@@ -39,15 +41,15 @@ class _OrderButtonState extends State<OrderButton> {
                         },
                         child: const Text('No')),
                     TextButton(
-                        onPressed: () async {
-                          await Provider.of<Orders>(context, listen: false)
-                              .postOrder(widget.cart.items.values.toList(),
-                                  );
+                        onPressed: () {
+                          Provider.of<Orders>(context, listen: false).postOrder(
+                            cartProvider.items.values.toList(),
+                          );
                           //print(widget.cart.items.values.toList().first.price);
                           setState(() {
                             _isloading = false;
                           });
-                          widget.cart.clear();
+                          cartProvider.clear();
                           Navigator.of(context).pop(true);
                         },
                         child: const Text('Yes')),

@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/products_provider.dart';
 import 'package:shop_app/views/screens/edit_product_screens/edit_product_screen.dart';
 import 'package:shop_app/views/widgets/drawer/app_drawer/app_drawer.dart';
 
-import '../../widgets/manage_products_widgets/user_product_item.dart';
+import '../../widgets/manage_products_widgets/store_product_item.dart';
 
-class ManageProductsScreen extends StatelessWidget {
-  static const routeName = '/user-products';
+class StoreAccountScreen extends StatelessWidget {
+  static const routeName = '/store-account';
 
-  const ManageProductsScreen({Key? key}) : super(key: key);
+  const StoreAccountScreen({Key? key}) : super(key: key);
 
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false)
-        .fetchAndSetProducts();
+    await Provider.of<Products>(context, listen: false).fetchStoreProducts();
   }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
-        title: const Text("Your Products"),
+        title: Text("${authProvider.store.name!} Account"),
         actions: [
           IconButton(
             onPressed: () =>
@@ -47,7 +48,7 @@ class ManageProductsScreen extends StatelessWidget {
                         child: ListView.builder(
                           itemBuilder: (_, int index) => Column(
                             children: [
-                              UserProductItem(
+                              StoreProductItem(
                                 productsData.items[index].id!,
                                 productsData.items[index].brand!.name!,
                                 productsData.items[index].imageUrls![0],

@@ -64,7 +64,7 @@ class Cart with ChangeNotifier {
     }
   }
 
-  Future<void> addToCart(
+  Future<void> addToCartRequest(
     int productId,
     int quantity,
     double price,
@@ -108,7 +108,7 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removeFromCart(int prodId) async {
+  Future<void> removeFromCartRequest(int prodId) async {
     final url =
         'https://ar-store-production.up.railway.app/api/cartItems/$prodId';
     Map<String, String> requestHeaders = {
@@ -118,14 +118,15 @@ class Cart with ChangeNotifier {
 
     try {
       http.Response response =
-          await http.get(Uri.parse(url), headers: requestHeaders);
-      print('Fetch cart ' + response.statusCode.toString());
+          await http.delete(Uri.parse(url), headers: requestHeaders);
 
       if (response.statusCode == 200) {
-        print('product deleted' + response.statusCode.toString());
+        print('product deleted ' + response.statusCode.toString());
         removeItem(prodId);
       }
-    } catch (e) {}
+    } catch (e) {
+      throw "Error : $e";
+    }
   }
 
   void removeSingleItem(int productId) {
@@ -137,7 +138,7 @@ class Cart with ChangeNotifier {
       _items.update(
           productId,
           (existingCartItem) => CartItem(
-                id: existingCartItem.id,
+                id: productId.toString(),
                 title: existingCartItem.title,
                 price: existingCartItem.price,
                 quantity: existingCartItem.quantity! - 1,

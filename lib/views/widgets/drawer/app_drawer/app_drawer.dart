@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/auth_provider.dart';
+import 'package:shop_app/providers/orders_provider.dart';
+import 'package:shop_app/providers/stores_provider.dart';
 import 'package:shop_app/views/screens/orders_screens/orders_screen.dart';
 import 'package:shop_app/views/screens/stores_screens/stores_screen.dart';
-import 'package:shop_app/views/screens/manage_products_screen/manage_products_screen.dart';
+import '../../../../cache/cacheHelper.dart';
+import '../../../../providers/auth.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final ordersProvider = Provider.of<Orders>(context, listen: false);
+    final storesProvider = Provider.of<Stores>(context, listen: false);
     return Drawer(
       child: Column(
         children: [
-          
           const Divider(
             height: 60,
           ),
@@ -26,30 +29,33 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.store_mall_directory),
             title: const Text('Stores'),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(StoresScreen.routeName),
+            onTap: () {
+              storesProvider.getAllStores();
+              Navigator.of(context)
+                  .pushReplacementNamed(StoresScreen.routeName);
+            },
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.payment),
             title: const Text('Orders'),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(OrdersScreen.routeName),
+            onTap: () {
+              ordersProvider.setLoadingIndicator(true);
+              ordersProvider.getOrders();
+              Navigator.of(context)
+                  .pushReplacementNamed(OrdersScreen.routeName);
+            },
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.edit),
-            title: const Text('Manage Products'),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(ManageProductsScreen.routeName),
-          ),
-          ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),
-            onTap: () {
+            onTap: () async {
+              Provider.of<Auth>(context, listen: false)
+                  .setLoadingIndicator(false);
+              Provider.of<Auth>(context, listen: false).setAuthentucated(false);
+              CacheData.deleteItem(key: 'token');
               Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed('/');
-              Provider.of<Auth>(context, listen: false).logout();
             },
           ),
         ],

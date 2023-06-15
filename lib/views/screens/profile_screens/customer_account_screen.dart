@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/auth.dart';
 
-class MyAccountScreen extends StatefulWidget {
-  static const routeName = '/myAccount';
+class CustomerAccountScreen extends StatefulWidget {
+  static const routeName = '/customer-account';
+
+  const CustomerAccountScreen({Key? key}) : super(key: key);
 
   @override
-  _MyAccountScreenState createState() => _MyAccountScreenState();
+  _CustomerAccountScreenState createState() => _CustomerAccountScreenState();
 }
 
-class _MyAccountScreenState extends State<MyAccountScreen> {
+class _CustomerAccountScreenState extends State<CustomerAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

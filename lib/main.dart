@@ -3,9 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart_provider.dart';
+import 'package:shop_app/providers/orders_provider.dart';
 import 'package:shop_app/providers/product_provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
-import 'package:shop_app/providers/stores.dart';
+import 'package:shop_app/providers/stores_provider.dart';
 import 'package:shop_app/routes.dart';
 import 'package:shop_app/shared/constants/constants.dart';
 import 'package:shop_app/views/screens/home_screens/home_screen.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Auth()),
         ChangeNotifierProvider.value(value: Product()),
         ChangeNotifierProvider.value(value: Products()),
+        ChangeNotifierProvider.value(value: Orders()),
         // ChangeNotifierProxyProvider<Auth, Products>(
         //     create: (_) => Products(),
         //     update: (ctx, authValue, previousProducts) => Products()

@@ -65,6 +65,7 @@ flutter:
     - assets/images/images_slider/image4.jpg
     - assets/images/profile_mask.png
     - assets/images/login_success.png
+    - assets/images/storePlaceholder.PNG
 
   fonts:
     - family: Lato
