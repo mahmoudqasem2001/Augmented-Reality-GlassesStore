@@ -1,13 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shop_app/core/api/status_code.dart';
 import 'package:shop_app/models/store.dart';
 import '../models/brand.dart';
 import '../models/glasses_filter.dart';
 import '../shared/constants/constants.dart';
 import 'product_provider.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 
 class Products with ChangeNotifier {
   List<Product> _items = [];
@@ -233,95 +235,111 @@ class Products with ChangeNotifier {
     } catch (e) {}
   }
 
- 
   //////////////////
   ///
   ///
   ///
 
-  Future<void> deleteProduct(int id) async {
-    final url = 'https://ar-store-production.up.railway.app/api/glasses/$id';
-    final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+  Future<void> postPhotos(int productId, List<XFile> files) async {
+    final url = Uri.parse(
+        'https://ar-store-production.up.railway.app/api/glasses/$productId/photos');
 
-    Product? existingProduct = _items[existingProductIndex];
-    _items.removeAt(existingProductIndex);
-    notifyListeners();
-
-    Map<String, String> requestHeaders = {
+    // Set your request headers
+    final headers = {
       'accept': '*/*',
       'Authorization': 'Bearer $token',
+      'Content-Type': 'multipart/form-data',
     };
 
-    final res = await http.delete(Uri.parse(url), headers: requestHeaders);
-    if (res.statusCode >= 400) {
-      _items.insert(existingProductIndex, existingProduct);
-      notifyListeners();
-      throw const HttpException('Could not delete Product.');
-    } else if (res.statusCode == StatusCode.ok) {
-      print('item deleted with id' + id.toString());
-    }
-    existingProduct = null;
-  }
+    // Create a multipart request
+    final request = http.MultipartRequest('POST', url);
 
-  Future<void> addProduct(Product product) async {
-    final url =
-        'https://shop-43d63-default-rtdb.firebaseio.com/products.json?auth=$authToken';
+    // Add the photo files to the request
 
-    try {
-      final res = await http.post(Uri.parse(url),
-          body: json.encode({
-            'brand': product.brand,
-            'model': product.model,
-            'imageUrls': product.imageUrls,
-            'price': product.price,
-            'creatorId': userId,
-          }));
-
-      final newProduct = Product(
-        id: json.decode(res.body)['name'],
-        brand: product.brand,
-        model: product.model,
-        imageUrls: product.imageUrls,
-        price: product.price,
+    for (final myFile in files) {
+      final file = await http.MultipartFile.fromPath(
+        'photos',
+        myFile.name,
+        contentType: MediaType.parse(lookupMimeType(myFile.name)!),
       );
-      _items.add(newProduct);
-      notifyListeners();
-    } catch (e) {
-      rethrow;
+      request.files.add(file);
+    }
+
+    // Set the request headers
+    request.headers.addAll(headers);
+
+    // Send the request and get the response
+    final response = await http.Response.fromStream(await request.send());
+
+    // Handle the response
+    if (response.statusCode == StatusCode.ok) {
+      // Request was successful
+      print(' Images Request successful');
+    } else {
+      // Request failed
+      print('images Request failed with status: ${response.statusCode}');
     }
   }
 
-  Future<void> updateProduct(int id, Product newProduct) async {
+  Future<void> createProduct(
+      Map<String, dynamic> newProduct, List<XFile> files) async {
+    final url =
+        Uri.parse('https://ar-store-production.up.railway.app/api/glasses');
 
+    final headers = {
+      'accept': '*/*',
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+
+    final body = json.encode({
+      "description": newProduct['description'],
+      "price": newProduct['price'],
+      "brandId": newProduct['brandId'],
+      "model": newProduct['model'],
+      "color": newProduct['color'],
+      "type": newProduct['type'],
+      "gender": newProduct['gender'],
+      "border": newProduct['border'],
+      "shape": newProduct['shape']
+    });
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    if (response.statusCode == StatusCode.created) {
+      print('created successful');
+      final responseData = json.decode(response.body);
+      // await postPhotos(productId, files);
+    } else {
+      print('created failed with status: ${response.statusCode}');
+    }
+  }
+
+  Future<void> updateProduct(Map<String, dynamic> editedProduct) async {
+    int id = editedProduct['id'];
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
-      final url =
-          'https://ar-store-production.up.railway.app/api/glasses/$id';
-      await http.put(Uri.parse(url),
+      final url = 'https://ar-store-production.up.railway.app/api/glasses/$id';
+      final res = await http.put(Uri.parse(url),
           body: json.encode({
-            'id':newProduct.id, 
-            'price': newProduct.price,
-            'brandId':newProduct.brand!.id,
-            'model': newProduct.model,
-            'color':newProduct.color, 
-            'type':newProduct.type, 
-            'gender':newProduct.gender, 
-            'boder':newProduct.border, 
-            'shape':newProduct.shape,
+            'id': editedProduct['id'],
+            'description': editedProduct['description'],
+            'price': editedProduct['price'],
+            'brandId': editedProduct['brandId'],
+            'model': editedProduct['model'],
+            'color': editedProduct['color'],
+            'type': editedProduct['type'],
+            'gender': editedProduct['gender'],
+            'boder': editedProduct['boder'],
+            'shape': editedProduct['shape'],
           }));
-
-      _items[prodIndex] = newProduct;
+      print('edit');
+      print(res.statusCode);
       notifyListeners();
     }
-  }
-
-  String authToken = '';
-  String userId = '';
-
-  getData(String authToken, String uId, List<Product> products) {
-    this.authToken = authToken;
-    userId = uId;
-    _items = products;
-    notifyListeners();
   }
 }

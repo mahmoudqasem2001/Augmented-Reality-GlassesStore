@@ -7,7 +7,6 @@ import '../../../shared/constants/constants.dart';
 import '../../screens/login_screens/login_success_screen.dart';
 import '../auth_common_widgets/form_error.dart';
 
-//enum User { customer, store }
 
 class SignForm extends StatefulWidget {
   const SignForm({Key? key}) : super(key: key);
@@ -17,7 +16,6 @@ class SignForm extends StatefulWidget {
 }
 
 class _SignFormState extends State<SignForm> {
-  User _userType = User.customer;
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
@@ -88,12 +86,12 @@ class _SignFormState extends State<SignForm> {
               Column(
                 children: [
                   Text("Customer"),
-                  Radio<User>(
-                      value: User.customer,
-                      groupValue: _userType,
-                      onChanged: (User? userType) {
+                  Radio<String>(
+                      value: 'customer',
+                      groupValue: userType,
+                      onChanged: (String? type) {
                         setState(() {
-                          _userType = userType!;
+                          userType = type!;
                         });
                       }),
                 ],
@@ -101,12 +99,12 @@ class _SignFormState extends State<SignForm> {
               Column(
                 children: [
                   Text("Store"),
-                  Radio<User>(
-                      value: User.store,
-                      groupValue: _userType,
-                      onChanged: (User? userType) {
+                  Radio<String>(
+                      value: 'store',
+                      groupValue: userType,
+                      onChanged: (String? type) {
                         setState(() {
-                          _userType = userType!;
+                          userType = type!;
                         });
                       }),
                 ],
@@ -213,16 +211,14 @@ class _SignFormState extends State<SignForm> {
               final cartProvider = Provider.of<Cart>(context, listen: false);
               if (auth.authenticated == true) {
                 auth.setLoadingIndicator(false);
-                if (_userType == User.customer) {
+                if (userType == 'customer') {
                   auth
                       .fetchCustomerAccountInfo()
                       .then((value) => auth.setAuthentucated(value));
-                  auth.setUserType(_userType);
-                } else if (_userType == User.store) {
+                } else if (userType == 'store') {
                   auth
                       .fetchStoreAccountInfo()
                       .then((value) => auth.setAuthentucated(value));
-                  auth.setUserType(_userType);
                 }
                 cartProvider.fetchCartItems();
                 Navigator.of(context)

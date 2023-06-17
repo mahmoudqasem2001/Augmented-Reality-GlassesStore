@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
-import 'package:shop_app/views/screens/edit_product_screens/edit_product_screen.dart';
+import '../../screens/edit_product_screens/edit_product_screens.dart';
 
 class StoreProductItem extends StatelessWidget {
   final int id;
@@ -36,8 +36,8 @@ class StoreProductItem extends StatelessWidget {
             IconButton(
               onPressed: () async {
                 try {
-                  await Provider.of<Products>(context, listen: false)
-                      .deleteProduct(id);
+                  // await Provider.of<Products>(context, listen: false)
+                  //     .deleteProduct(id);
                 } catch (e) {
                   scaffold.showSnackBar(
                     const SnackBar(

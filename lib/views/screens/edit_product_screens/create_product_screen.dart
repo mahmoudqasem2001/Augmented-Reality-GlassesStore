@@ -1,20 +1,25 @@
+import 'dart:io';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product_provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
+import 'package:shop_app/providers/stores_provider.dart';
 
-class EditProduct extends StatefulWidget {
-  static const routeName = '/edit-product';
-  const EditProduct({Key? key}) : super(key: key);
+class CreateProductScreen extends StatefulWidget {
+  static const routeName = '/create-product';
+  const CreateProductScreen({Key? key}) : super(key: key);
 
   @override
-  State<EditProduct> createState() => _EditProductState();
+  State<CreateProductScreen> createState() => _CreateProductScreenState();
 }
 
-class _EditProductState extends State<EditProduct> {
+class _CreateProductScreenState extends State<CreateProductScreen> {
   var editedProduct = Product();
-
+  final ImagePicker _picker = ImagePicker();
+  List<XFile>? _imageFileList = [];
   List<String> colors = [
     "Red",
     "Black",
@@ -37,25 +42,31 @@ class _EditProductState extends State<EditProduct> {
 
   @override
   Widget build(BuildContext context) {
-    final productId = ModalRoute.of(context)!.settings.arguments;
-    final initialProduct = Provider.of<Products>(context, listen: false)
-        .findById(productId as int);
+    // final productId = ModalRoute.of(context)!.settings.arguments;
+    // final initialProduct = Provider.of<Products>(context, listen: false)
+    //     .findById(productId as int);
+    final storesProvider = Provider.of<Stores>(context, listen: false);
+    final productsProvider = Provider.of<Products>(context, listen: false);
+    Map<int, String> brands = {};
+
+    for (var brand in storesProvider.brands) {
+      brands.putIfAbsent(brand.id!, () => brand.name!);
+    }
 
     Map<String, dynamic> _editedProduct = {
-      'id': productId,
-      'model': initialProduct.model,
-      'quantity': initialProduct.quantity,
-      'price': initialProduct.price,
-      'color': initialProduct.color,
-      'type': initialProduct.type,
-      'gender': initialProduct.gender,
-      'border': initialProduct.border,
-      'shape': initialProduct.shape,
+      'model': " ",
+      'description': " ",
+      'price': " ",
+      'brandId': 0,
+      'color': " ",
+      'type': " ",
+      'gender': " ",
+      'border': " ",
+      'shape': " ",
     };
 
     Widget editItemPrice() {
       return TextFormField(
-        initialValue: initialProduct.price.toString(),
         decoration: const InputDecoration(labelText: 'Price'),
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.number,
@@ -79,7 +90,6 @@ class _EditProductState extends State<EditProduct> {
 
     Widget editItemQuantity() {
       return TextFormField(
-        initialValue: initialProduct.quantity.toString(),
         decoration: const InputDecoration(labelText: 'Quantity'),
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.number,
@@ -103,7 +113,6 @@ class _EditProductState extends State<EditProduct> {
 
     Widget editItemModel() {
       return TextFormField(
-        initialValue: initialProduct.model,
         decoration: const InputDecoration(labelText: 'Model'),
         keyboardType: TextInputType.text,
         validator: (value) {
@@ -151,7 +160,7 @@ class _EditProductState extends State<EditProduct> {
                 }
                 return null;
               },
-              selectedItem: initialProduct.color,
+              selectedItem: " ",
             ),
           ),
         ],
@@ -191,7 +200,7 @@ class _EditProductState extends State<EditProduct> {
                 }
                 return null;
               },
-              selectedItem: initialProduct.type,
+              selectedItem: " ",
             ),
           ),
         ],
@@ -231,7 +240,7 @@ class _EditProductState extends State<EditProduct> {
                 }
                 return null;
               },
-              selectedItem: initialProduct.gender,
+              selectedItem: " ",
             ),
           ),
         ],
@@ -271,7 +280,7 @@ class _EditProductState extends State<EditProduct> {
                 }
                 return null;
               },
-              selectedItem: initialProduct.border,
+              selectedItem: " ",
             ),
           ),
         ],
@@ -311,42 +320,78 @@ class _EditProductState extends State<EditProduct> {
                 }
                 return null;
               },
-              selectedItem: initialProduct.shape,
+              selectedItem: " ",
             ),
           ),
         ],
       );
     }
 
+    Widget editItemBrand() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(
+            width: 10,
+          ),
+          SizedBox(
+            width: 130,
+            child: DropdownSearch<String>(
+              popupProps: PopupProps.menu(
+                fit: FlexFit.loose,
+                menuProps: MenuProps(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                showSelectedItems: true,
+              ),
+              items: brands.values.toList(),
+              dropdownDecoratorProps: const DropDownDecoratorProps(
+                baseStyle: TextStyle(fontSize: 11),
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "Brand",
+                ),
+              ),
+              onChanged: (String? newValue) {
+                int? id;
+                brands.forEach((key, value) {
+                  if (value == newValue) {
+                    id = key;
+                  }
+                });
+                _editedProduct['brandId'] = id;
+              },
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "You must select Color";
+                }
+                return null;
+              },
+              selectedItem: " ",
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget imagePicker() {
+      return ElevatedButton(
+          onPressed: () {
+            selectImages();
+          },
+          child: Text('Select Images'));
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
-        title: Text('Edit Product Screen'),
+        title: Text('Create Product Screen'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () async {
               try {
                 if (_editedProduct['id'] != null) {
-                  await Provider.of<Products>(context, listen: false)
-                      .updateProduct(
-                    _editedProduct['id'],
-                    Product(
-                      id: _editedProduct['id'],
-                      border: _editedProduct['border'],
-                      color: _editedProduct['color'],
-                      gender: _editedProduct['gender'],
-                      model: _editedProduct['model'],
-                      price: _editedProduct['price'],
-                      shape: _editedProduct['shape'],
-                      type: _editedProduct['type'],
-                      quantity: _editedProduct['quantity'],
-                      brand: initialProduct.brand,
-                      imageUrls: initialProduct.imageUrls,
-                      rating: initialProduct.rating,
-                      store: initialProduct.store,
-                    ),
-                  );
+                  await productsProvider.createProduct(_editedProduct, _imageFileList!);
                 }
               } catch (e) {
                 await showDialog(
@@ -380,6 +425,10 @@ class _EditProductState extends State<EditProduct> {
           const SizedBox(
             height: 20,
           ),
+          editItemBrand(),
+          const SizedBox(
+            height: 20,
+          ),
           editItemModel(),
           const SizedBox(
             height: 20,
@@ -401,8 +450,39 @@ class _EditProductState extends State<EditProduct> {
             height: 20,
           ),
           editItemShape(),
+          const SizedBox(
+            height: 20,
+          ),
+          imagePicker(),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            height: 400,
+            child: GridView.builder(
+                itemCount: _imageFileList!.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.file(
+                      File(_imageFileList![index].path),
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                }),
+          )
         ]),
       ),
     );
+  }
+
+  void selectImages() async {
+    final List<XFile> selecedImages = await _picker.pickMultiImage();
+    if (selecedImages.isNotEmpty) {
+      _imageFileList!.addAll(selecedImages);
+    }
   }
 }

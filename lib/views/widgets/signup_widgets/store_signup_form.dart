@@ -26,22 +26,22 @@ class _StoreSignUpFormState extends State<StoreSignUpForm> {
   final street = TextEditingController();
   final zip = TextEditingController();
 
-
   final List<String?> errors = [];
 
   var selectedItem;
 
-  void _submit() async {
+  _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
+      Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
       return;
     }
     FocusScope.of(context).unfocus();
     _formKey.currentState!.save();
 
-    Provider.of<Auth>(context, listen: false).setLoadingIndicator(true);
-
     try {
-      bool authenticated = await Provider.of<Auth>(context, listen: false)
+      final authProvider = Provider.of<Auth>(context, listen: false);
+      authProvider.setLoadingIndicator(true);
+      await Provider.of<Auth>(context, listen: false)
           .storeRegister(
               storeName: name.text,
               phoneNumber: '0' + phoneNumber.text,
@@ -50,14 +50,8 @@ class _StoreSignUpFormState extends State<StoreSignUpForm> {
               street: street.text,
               zip: zip.text,
               email: email.text,
-              password: password.text);
-      Provider.of<Auth>(context, listen: false).setAuthentucated(authenticated);
-
-      if (authenticated == true) {
-        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-      } else {
-        print('something wrong');
-      }
+              password: password.text)
+          .then((value) => authProvider.setAuthentucated(value));
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXIST')) {
@@ -78,7 +72,6 @@ class _StoreSignUpFormState extends State<StoreSignUpForm> {
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
     }
-    Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
   }
 
   void _showErrorDialog(String errorMessage) {
@@ -429,33 +422,46 @@ class _StoreSignUpFormState extends State<StoreSignUpForm> {
   }
 
   Widget submitSignUpButton() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: MaterialButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-            }
-            _submit();
-            //Navigator.of(context).pushNamed(HomeScreen.routeName);
-          },
-          minWidth: 200,
-          height: 50,
-          color: Colors.black,
-          child: Consumer<Auth>(
-            builder: (_, auth, child) {
-              return auth.isLoading
-                  ? CircularProgressIndicator(color: Colors.white,)
-                  : const Text(
-                      'Continue',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    );
+    return Consumer<Auth>(builder: (ctx, auth, _) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: MaterialButton(
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+              }
+              await _submit(context);
+              if (auth.authenticated == true) {
+                auth.setLoadingIndicator(false);
+                auth
+                    .fetchStoreAccountInfo()
+                    .then((value) => auth.setAuthentucated(value));
+                Navigator.of(context)
+                    .pushReplacementNamed(HomeScreen.routeName);
+              } else {
+                print('something wrong');
+              }
             },
+            minWidth: 200,
+            height: 50,
+            color: Colors.black,
+            child: Consumer<Auth>(
+              builder: (_, auth, child) {
+                return auth.isLoading
+                    ? CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : const Text(
+                        'Continue',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      );
+              },
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

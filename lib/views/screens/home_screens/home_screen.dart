@@ -35,14 +35,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final productsProvider = Provider.of<Products>(context, listen: false);
 
     productsProvider.fetchAndSetProducts();
-    if(authProvider.userType== User.customer){
+    if(userType== "customer"){
       authProvider.fetchCustomerAccountInfo().then((value) {
       authProvider.setAuthentucated(value);
       if (authProvider.authenticated == true) {
         cartProvider.fetchCartItems();
       }
     });
-    }else if(authProvider.userType== User.store){
+    }else if(userType=="store"){
       authProvider.fetchStoreAccountInfo().then((value) {
       authProvider.setAuthentucated(value);
       if (authProvider.authenticated == true) {

@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/cache/cacheHelper.dart';
 import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/products_provider.dart';
+import 'package:shop_app/providers/stores_provider.dart';
 import 'package:shop_app/views/screens/helping_center_screens/helping_center_screen.dart';
-import 'package:shop_app/views/screens/profile_screens/store_account_screen.dart';
-import 'package:shop_app/views/screens/profile_screens/customer_account_screen.dart';
+import 'package:shop_app/views/screens/account_screens/store_account_screen.dart';
+import 'package:shop_app/views/screens/account_screens/customer_account_screen.dart';
 
 import '../../../shared/constants/constants.dart';
 
@@ -16,6 +17,7 @@ class ProfileOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<Auth>(context, listen: false);
     final productsProvider = Provider.of<Products>(context, listen: false);
+    final storesProvider = Provider.of<Stores>(context, listen: false);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -33,12 +35,13 @@ class ProfileOptions extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            if (authProvider.userType == User.customer) {
+            if (userType == 'customer') {
               authProvider.fetchCustomerAccountInfo();
               Navigator.of(context).pushNamed(CustomerAccountScreen.routeName);
-            } else if (authProvider.userType == User.store) {
+            } else if (userType == 'store') {
               authProvider.fetchStoreAccountInfo();
               productsProvider.getProductsByStoreId(authProvider.store.id!);
+              storesProvider.getAllBrands();
               Navigator.of(context).pushNamed(StoreAccountScreen.routeName,
                   arguments: authProvider.store.id);
             }

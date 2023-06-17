@@ -2,7 +2,7 @@ import 'package:shop_app/providers/product_provider.dart';
 
 class OrderItem {
   int quantity;
-  int price;
+  double price;
   Product item;
   OrderItem({
     required this.quantity,

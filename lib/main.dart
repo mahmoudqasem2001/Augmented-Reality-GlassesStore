@@ -17,10 +17,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheData.cacheInitialization();
   token = await CacheData.getData(key: 'token');
-  id = await CacheData.getData(key: 'id');
+  userType = await CacheData.getData(key: 'userType');
   print("token is " + token!);
-  print("id is " + id!);
-  
+  print("user type is " + userType);
+
   runApp(const MyApp());
 }
 

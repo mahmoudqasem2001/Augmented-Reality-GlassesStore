@@ -25,7 +25,7 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> postOrder(List<CartItem> orderItems) async {
+  Future postOrder(List<CartItem> orderItems) async {
     final url =
         Uri.parse('https://ar-store-production.up.railway.app/api/orders');
 
@@ -69,13 +69,15 @@ class Orders with ChangeNotifier {
     try {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == StatusCode.ok) {
-        final responseData =
-            json.decode(response.body) as List<Map<String, dynamic>>;
+        final responseData = json.decode(response.body) as List<dynamic>;
         print(responseData);
 
         List<OrderItem> loadedOrderItems = [];
+        List<order.Order> loadedOrders = [];
+
         for (var responseOrder in responseData) {
-          for (var responseOrderItem in responseOrder['orderItems'] as List<Map<String, dynamic>>) {
+          loadedOrderItems = [];
+          for (var responseOrderItem in responseOrder['orderItems']) {
             loadedOrderItems.add(OrderItem(
                 quantity: responseOrderItem['quantity'],
                 price: responseOrderItem['price'],
@@ -103,10 +105,6 @@ class Orders with ChangeNotifier {
                   shape: responseOrderItem['item']['shape'],
                 )));
           }
-        }
-
-        List<order.Order> loadedOrders = [];
-        for (var responseOrder in responseData) {
           loadedOrders.add(
             order.Order(
               id: responseOrder['id'],
@@ -117,12 +115,15 @@ class Orders with ChangeNotifier {
             ),
           );
         }
+        print(loadedOrders.length);
         _isLoading = false;
+
         _orders = loadedOrders;
       }
     } catch (e) {
       print('Error: $e');
     }
+
     notifyListeners();
   }
 }

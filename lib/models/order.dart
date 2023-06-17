@@ -4,8 +4,8 @@ import 'package:shop_app/models/order_item.dart';
 class Order {
   int id;
   String orderStatus;
-  int discount;
-  int totalPrice;
+  double discount;
+double totalPrice;
   List<OrderItem> orderItems;
   Order({
     required this.id,

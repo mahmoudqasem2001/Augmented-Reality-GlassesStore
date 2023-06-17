@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/auth.dart';
+import '../../../providers/cart_provider.dart';
 import '../../screens/home_screens/home_screen.dart';
 import '../auth_common_widgets/form_error.dart';
 
@@ -32,7 +33,7 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
 
   var selectedItem;
 
-  void _submit() async {
+  _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       Provider.of<Auth>(context, listen: false).setLoadingIndicator(false);
       return;
@@ -41,16 +42,20 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
     _formKey.currentState!.save();
 
     try {
-      await Provider.of<Auth>(context, listen: false).customerRegister(
-          userName: name.text,
-          userPhoneNumber: '0' + phoneNumber.text,
-          country: country.text,
-          city: city.text,
-          street: street.text,
-          zip: zip.text,
-          userGender: gender.text,
-          email: email.text,
-          password: password.text);
+      final authProvider = Provider.of<Auth>(context, listen: false);
+      authProvider.setLoadingIndicator(true);
+      await Provider.of<Auth>(context, listen: false)
+          .customerRegister(
+              userName: name.text,
+              userPhoneNumber: '0' + phoneNumber.text,
+              country: country.text,
+              city: city.text,
+              street: street.text,
+              zip: zip.text,
+              userGender: gender.text,
+              email: email.text,
+              password: password.text)
+          .then((value) => authProvider.setAuthentucated(value));
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXIST')) {
@@ -463,45 +468,50 @@ class _CustomerSignUpFormState extends State<CustomerSignUpForm> {
   }
 
   Widget submitSignUpButton() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: MaterialButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-            }
+    return Consumer<Auth>(builder: (ctx, auth, _) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: MaterialButton(
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+              }
+              await _submit(context);
 
-            final authProvider = Provider.of<Auth>(context, listen: false);
-            authProvider.setLoadingIndicator(true);
+              final cartProvider = Provider.of<Cart>(context, listen: false);
 
-            _submit();
-
-            if (authProvider.authenticated == true) {
-              authProvider.setLoadingIndicator(false);
-              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-            } else {
-              print('something wrong');
-            }
-          },
-          minWidth: 200,
-          height: 50,
-          color: Colors.black,
-          child: Consumer<Auth>(
-            builder: (_, auth, child) {
-              return auth.isLoading
-                  ? CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                  : const Text(
-                      'Continue',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    );
+              if (auth.authenticated == true) {
+                auth.setLoadingIndicator(false);
+                auth
+                    .fetchCustomerAccountInfo()
+                    .then((value) => auth.setAuthentucated(value));
+                cartProvider.fetchCartItems();
+                Navigator.of(context)
+                    .pushReplacementNamed(HomeScreen.routeName);
+              } else {
+                print('something wrong');
+              }
             },
+            minWidth: 200,
+            height: 50,
+            color: Colors.black,
+            child: Consumer<Auth>(
+              builder: (_, auth, child) {
+                return auth.isLoading
+                    ? CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : const Text(
+                        'Continue',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      );
+              },
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

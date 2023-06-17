@@ -10,6 +10,7 @@ class Product with ChangeNotifier {
   final int? id;
   final Brand? brand;
   final String? model;
+  final String? description;
   final double? price;
   final int? quantity;
   final double? rating;
@@ -25,6 +26,7 @@ class Product with ChangeNotifier {
     this.id,
     this.brand,
     this.model,
+    this.description,
     this.price,
     this.quantity,
     this.rating,

@@ -7,26 +7,18 @@ import 'package:shop_app/models/customer.dart';
 import 'package:shop_app/models/store.dart';
 import 'package:shop_app/shared/constants/constants.dart';
 
-
 class Auth with ChangeNotifier {
   bool _authenticated = false;
   bool _isLoading = false;
   String? _country = '';
   Customer _customer = Customer();
   Store _store = Store();
-  User _userType = User.customer;
-  
 
-  User get userType => _userType;
   Store get store => _store;
   Customer get customer => _customer;
   get country => _country;
   get authenticated => _authenticated;
   get isLoading => _isLoading;
-
-  void setUserType(User type) {
-    _userType = type as User;
-  }
 
   void setStore(Store store) {
     _store = store;
@@ -84,15 +76,10 @@ class Auth with ChangeNotifier {
       if (response.statusCode == StatusCode.created) {
         print('yessCustomer......' + response.statusCode.toString());
         Map<String, dynamic> responseHeaders = response.headers;
-        //String location = responseHeaders['location'];
-        //final id = location.split('/').last;
 
         await CacheData.setData(
             key: 'token', value: responseHeaders['authorization']);
-        //await CacheData.setData(key: 'id', value: id);
-        // await CacheData.setData(
-        //     key: id, value: responseHeaders['authorization']);
-        // login(email: email, password: password);
+
         addressRequest(country, city, street, zip);
         _authenticated = true;
         _isLoading = false;
@@ -153,17 +140,13 @@ class Auth with ChangeNotifier {
       if (response.statusCode == StatusCode.created) {
         print('yessStore......' + response.statusCode.toString());
         Map<String, dynamic> responseHeaders = response.headers;
-        //String location = responseHeaders['location'];
-        // final id = location.split('/').last;
-
         await CacheData.setData(
             key: 'token', value: responseHeaders['authorization']);
-        // await CacheData.setData(key: 'id', value: id);
-        // await CacheData.setData(
-        //     key: id, value: responseHeaders['authorization']);
-        // login(email: email, password: password);
 
         addressRequest(country, city, street, zip);
+        _authenticated = true;
+        _isLoading = false;
+        notifyListeners();
         return true;
       }
       if (response.statusCode == StatusCode.badRequest) {
@@ -203,13 +186,15 @@ class Auth with ChangeNotifier {
         headers: requestHeaders,
       );
       if (response.statusCode == StatusCode.ok) {
+        _authenticated = true;
+        _isLoading = false;
+
         var responseHeaders = response.headers;
         await CacheData.deleteItem(key: 'token');
         await CacheData.setData(
             key: 'token', value: responseHeaders['authorization']);
-
         token = await CacheData.getData(key: 'token');
-        _authenticated = true;
+
         print("after login token is " + token!);
 
         notifyListeners();
@@ -218,7 +203,6 @@ class Auth with ChangeNotifier {
       if (response.statusCode == StatusCode.badRequest) {
         final responseBody = json.decode(response.body);
 
-        // Extract the necessary information from the response body
         final timestamp = responseBody['timestamp'];
         final messages = List<String>.from(responseBody['messages']);
         final status = responseBody['status'];
@@ -258,10 +242,7 @@ class Auth with ChangeNotifier {
         headers: requestHeaders,
         body: jsonEncode(requestAddressBody),
       );
-      print(addressResponse.statusCode);
-      if (addressResponse.statusCode == StatusCode.created) {
-        print('address yes........' + addressResponse.statusCode.toString());
-      }
+      print('address ........' + addressResponse.statusCode.toString());
     } catch (e) {
       print("Exception occurred: $e");
     }
@@ -271,16 +252,16 @@ class Auth with ChangeNotifier {
     const url = "https://ar-store-production.up.railway.app/api/me/customers";
     final requestHeaders = {
       'accept': '*/*',
-      'Authorization': 'Bearer ${token}',
+      'Authorization': 'Bearer $token',
     };
 
     try {
       final response = await http.get(Uri.parse(url), headers: requestHeaders);
       if (response.statusCode == StatusCode.ok) {
-        print(response.statusCode);
         final responseData = json.decode(response.body);
         print(responseData['name']);
-
+        await CacheData.setData(key: 'userType', value: 'customer');
+        userType = "customer";
         _customer = Customer(
           id: responseData['id'],
           name: responseData['name'],
@@ -304,21 +285,22 @@ class Auth with ChangeNotifier {
     const url = "https://ar-store-production.up.railway.app/api/me/stores";
     final requestHeaders = {
       'accept': '*/*',
-      'Authorization': 'Bearer ${token}',
+      'Authorization': 'Bearer $token',
     };
-
     try {
       final response = await http.get(Uri.parse(url), headers: requestHeaders);
       if (response.statusCode == StatusCode.ok) {
         print(response.statusCode);
         final responseData = json.decode(response.body);
         print(responseData['name']);
-
+        await CacheData.setData(key: 'userType', value: 'store');
+        userType = "store";
         _store = Store(
           id: responseData['id'],
           name: responseData['name'],
           phoneNumber: responseData['phoneNumber'],
         );
+        _authenticated = true;
         notifyListeners();
         return true;
       } else if (response.statusCode == StatusCode.forbidden) {
