@@ -1,5 +1,4 @@
 // ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/auth.dart';
@@ -25,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //var _isInit= false;
 
   @override
   void initState() {
@@ -55,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final storeName = ModalRoute.of(context)!.settings.arguments! as String;
 
     List screens = [
       const ProductOverViewScreen(),

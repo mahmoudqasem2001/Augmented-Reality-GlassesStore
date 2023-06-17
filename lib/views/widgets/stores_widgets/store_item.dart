@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
-import 'package:shop_app/providers/stores_provider.dart';
 import 'package:shop_app/views/screens/home_screens/home_screen.dart';
 
 class StoreItem extends StatelessWidget {
@@ -16,32 +15,21 @@ class StoreItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final storesProvider = Provider.of<Stores>(context, listen: false);
     final productsProvider = Provider.of<Products>(context, listen: false);
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(15),
       child: Container(
         color: Theme.of(context).colorScheme.secondary,
         child: GridTile(
           footer: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  storeName,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
+            padding: const EdgeInsets.only(top: 30),
+            child: Text(
+              storeName,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20
+              ),
             ),
           ),
           child: GestureDetector(

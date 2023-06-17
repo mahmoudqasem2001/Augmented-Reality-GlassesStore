@@ -170,6 +170,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       'Brown': Colors.brown,
       'Black': Colors.black,
       'Red': Colors.red,
+      'Grey': Colors.grey, 
+      'Blue': Colors.blue
     };
 
     final productId = ModalRoute.of(context)!.settings.arguments!;

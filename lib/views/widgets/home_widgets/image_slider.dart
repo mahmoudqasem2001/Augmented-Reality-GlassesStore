@@ -1,11 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import '../../../shared/assets_images/assets_images.dart';
 
 final List<String> imgList = [
-  'assets/images/images_slider/image1.jpg',
-  'assets/images/images_slider/image2.jpg',
-  'assets/images/images_slider/image3.jpg',
-  'assets/images/images_slider/image4.jpg',
+  AssetsImages.homePageSlider1,
+  AssetsImages.homePageSlider2,
+  AssetsImages.homePageSlider3,
+  AssetsImages.homePageSlider4,
 ];
 
 class ImageSlider extends StatelessWidget {
@@ -58,7 +59,8 @@ final List<Widget> imageSliders = imgList
                     end: Alignment.topCenter,
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
                 child: Text(
                   'No. ${imgList.indexOf(item)} image',
                   style: const TextStyle(

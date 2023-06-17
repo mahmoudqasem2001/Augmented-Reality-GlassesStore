@@ -4,8 +4,7 @@ import 'package:shop_app/providers/orders_provider.dart';
 import 'package:shop_app/providers/stores_provider.dart';
 import 'package:shop_app/views/screens/orders_screens/orders_screen.dart';
 import 'package:shop_app/views/screens/stores_screens/stores_screen.dart';
-import '../../../../cache/cacheHelper.dart';
-import '../../../../providers/auth.dart';
+
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -47,17 +46,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.exit_to_app),
-            title: const Text('Logout'),
-            onTap: () async {
-              Provider.of<Auth>(context, listen: false)
-                  .setLoadingIndicator(false);
-              Provider.of<Auth>(context, listen: false).setAuthentucated(false);
-              CacheData.deleteItem(key: 'token');
-              Navigator.of(context).pop();
-            },
-          ),
+         
         ],
       ),
     );

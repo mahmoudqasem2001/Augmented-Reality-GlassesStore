@@ -130,6 +130,7 @@ class ProfileOptions extends StatelessWidget {
             Provider.of<Auth>(context, listen: false)
                 .setLoadingIndicator(false);
             Provider.of<Auth>(context, listen: false).setAuthentucated(false);
+            token = '';
             await CacheData.deleteItem(key: 'token');
           },
           child: const Row(

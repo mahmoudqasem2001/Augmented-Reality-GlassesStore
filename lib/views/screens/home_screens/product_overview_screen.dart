@@ -6,38 +6,16 @@ import 'package:shop_app/views/widgets/home_widgets/image_slider.dart';
 import '../../../providers/products_provider.dart';
 import '../../widgets/products_widgets/product_grid.dart';
 
-class ProductOverViewScreen extends StatefulWidget {
+class ProductOverViewScreen extends StatelessWidget {
   static const routeName = '/product-overview';
+  final selectedItem=" ";
 
   const ProductOverViewScreen({Key? key}) : super(key: key);
-
-  @override
-  State<ProductOverViewScreen> createState() => _ProductOverViewScreenState();
-}
-
-class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
-  var selectedItem;
-  @override
-  void initState() {
-    super.initState();
-    // final productsProvider = Provider.of<Products>(context, listen: false);
-    // final itemFetched = productsProvider.itemsFetched;
-    // if (itemFetched == true) {
-    //   return;
-    // }
-    // // productsProvider.setIsLoadingIndicator(true);
-
-    // productsProvider.fetchAndSetProducts();
-    // // .then((_) => productsProvider.setIsLoadingIndicator(false))
-    // // .catchError((_) => productsProvider.setIsLoadingIndicator(true));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         const ImageSlider(),
-        //ProductsFilters(),
         Padding(
           padding: const EdgeInsets.only(
             top: 8.0,
@@ -48,7 +26,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
               padding: const EdgeInsets.only(left: 25),
               child: SizedBox(
                 width: 130,
-                child: sortMenu(),
+                child: sortMenu(context),
               ),
             ),
             const Spacer(),
@@ -84,7 +62,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
     );
   }
 
-  Widget sortMenu() {
+  Widget sortMenu(BuildContext context) {
     var products = Provider.of<Products>(context, listen: false);
 
     return DropdownSearch<String>(

@@ -10,7 +10,6 @@ import 'package:shop_app/providers/stores_provider.dart';
 import 'package:shop_app/routes.dart';
 import 'package:shop_app/shared/constants/constants.dart';
 import 'package:shop_app/views/screens/home_screens/home_screen.dart';
-
 import 'cache/cacheHelper.dart';
 
 Future<void> main() async {
@@ -36,26 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Product()),
         ChangeNotifierProvider.value(value: Products()),
         ChangeNotifierProvider.value(value: Orders()),
-        // ChangeNotifierProxyProvider<Auth, Products>(
-        //     create: (_) => Products(),
-        //     update: (ctx, authValue, previousProducts) => Products()
-        //     // previousProducts!
-        //     //   ..getData(
-        //     //     authValue.token!,
-        //     //     authValue.userId!,
-        //     //     previousProducts.items,
-        //     //  ),
-        //     ),
         ChangeNotifierProvider.value(value: Cart()),
-        // ChangeNotifierProxyProvider<Auth, Orders>(
-        //   create: (_) => Orders(),
-        //   update: (ctx, authValue, previousOrders) => previousOrders!
-        //     ..getData(
-        //       authValue.token!,
-        //       //authValue.userId!,
-        //       previousOrders.orders,
-        //     ),
-        // ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(

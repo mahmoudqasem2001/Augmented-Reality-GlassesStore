@@ -57,10 +57,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/product-placeholder.jpg
-    - assets/images/onboarding1.png
-    - assets/images/onboarding2.png
-    - assets/images/onboarding3.png
-    - assets/images/Capture.PNG
     - assets/images/profile.png
     - assets/images/images_slider/image1.jpg
     - assets/images/images_slider/image2.jpg
