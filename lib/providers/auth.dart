@@ -153,7 +153,7 @@ class Auth with ChangeNotifier {
         userType = 'store';
         notifyListeners();
 
-        addressRequest(country, city, street, zip);
+        // addressRequest(country, city, street, zip);
         return "success";
       }
       if (response.statusCode == StatusCode.badRequest) {
@@ -181,7 +181,8 @@ class Auth with ChangeNotifier {
     return "Unknown error occurred";
   }
 
-  Future<bool> login({required String email, required String password}) async {
+  Future<String> login(
+      {required String email, required String password}) async {
     const url = "https://ar-store-production.up.railway.app/api/auth/login";
     final requestBody = {
       'email': email,
@@ -208,27 +209,33 @@ class Auth with ChangeNotifier {
         token = await CacheData.getData(key: 'token');
 
         print("after login token is " + token!);
-
+        _authenticated = true;
+        _isLoading = false;
         notifyListeners();
-        return true;
+        return "success";
       }
       if (response.statusCode == StatusCode.badRequest) {
         final responseBody = json.decode(response.body);
 
-        final timestamp = responseBody['timestamp'];
+        // Extract the necessary information from the response body
+        // final timestamp = responseBody['timestamp'];
         final messages = List<String>.from(responseBody['messages']);
-        final status = responseBody['status'];
-
-        print('Timestamp: $timestamp');
-        print('Messages: $messages');
-        print('Status: $status');
-      } else {
-        print('Unexpected response status: ${response.statusCode}');
+        //final status = responseBody['status'];
+        String errorMessages = " ";
+        for (var element in messages) {
+          errorMessages = "$errorMessages, $element";
+        }
+        _isLoading = false;
+        _authenticated = false;
+        notifyListeners();
+        return errorMessages;
       }
     } catch (e) {
       print(e.toString());
     }
-    return false;
+    _isLoading = false;
+    notifyListeners();
+    return "Not Authinticated, enter valid data";
   }
 
   Future<void> addressRequest(

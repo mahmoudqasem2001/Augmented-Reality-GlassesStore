@@ -357,6 +357,13 @@ class Products with ChangeNotifier {
 
   Future deleteProduct(int id) async {
     print(id);
+    int index = -1;
+    for (var i = 0; i < _items.length; i++) {
+      if (id == _items[i].getId) {
+        index = i;
+      }
+    }
+    _items.removeAt(index);
     String url = 'https://ar-store-production.up.railway.app/api/glasses/$id';
 
     try {

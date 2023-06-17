@@ -38,4 +38,6 @@ class Product with ChangeNotifier {
     this.border,
     this.shape,
   });
+
+  get getId => id;
 }
