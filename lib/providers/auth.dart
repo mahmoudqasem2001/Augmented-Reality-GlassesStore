@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/cache/cacheHelper.dart';
 import 'package:shop_app/core/api/status_code.dart';
+import 'package:shop_app/models/address.dart';
 import 'package:shop_app/models/customer.dart';
 import 'package:shop_app/models/store.dart';
 import 'package:shop_app/shared/constants/constants.dart';
@@ -39,7 +40,7 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> customerRegister({
+  Future<String> customerRegister({
     required String userName,
     required String userPhoneNumber,
     required String country,
@@ -74,38 +75,44 @@ class Auth with ChangeNotifier {
       );
 
       if (response.statusCode == StatusCode.created) {
-        print('yessCustomer......' + response.statusCode.toString());
         Map<String, dynamic> responseHeaders = response.headers;
-
         await CacheData.setData(
             key: 'token', value: responseHeaders['authorization']);
-
-        addressRequest(country, city, street, zip);
+        token = responseHeaders['authorization'];
         _authenticated = true;
         _isLoading = false;
+        userType = "customer";
         notifyListeners();
-        return true;
+
+        await addressRequest(country, city, street, zip);
+        return "success";
       }
       if (response.statusCode == StatusCode.badRequest) {
         final responseBody = json.decode(response.body);
 
-        final timestamp = responseBody['timestamp'];
+        //final timestamp = responseBody['timestamp'];
         final messages = List<String>.from(responseBody['messages']);
-        final status = responseBody['status'];
+        //final status = responseBody['status'];
 
-        print('Timestamp: $timestamp');
-        print('Messages: $messages');
-        print('Status: $status');
+        String errorMessages = " ";
+        for (var element in messages) {
+          errorMessages = "$errorMessages, $element";
+        }
+        _isLoading = false;
+        notifyListeners();
+        return errorMessages;
       } else {
         print('Unexpected response status: ${response.statusCode}');
       }
     } catch (e) {
       print("Exception occurred: $e");
     }
-    return false;
+    _isLoading = false;
+    notifyListeners();
+    return "Unknown error occurred";
   }
 
-  Future<bool> storeRegister({
+  Future<String> storeRegister({
     required String storeName,
     required String phoneNumber,
     required String country,
@@ -138,35 +145,40 @@ class Auth with ChangeNotifier {
       );
 
       if (response.statusCode == StatusCode.created) {
-        print('yessStore......' + response.statusCode.toString());
         Map<String, dynamic> responseHeaders = response.headers;
         await CacheData.setData(
             key: 'token', value: responseHeaders['authorization']);
-
-        addressRequest(country, city, street, zip);
         _authenticated = true;
         _isLoading = false;
+        userType = 'store';
         notifyListeners();
-        return true;
+
+        addressRequest(country, city, street, zip);
+        return "success";
       }
       if (response.statusCode == StatusCode.badRequest) {
         final responseBody = json.decode(response.body);
 
         // Extract the necessary information from the response body
-        final timestamp = responseBody['timestamp'];
+        // final timestamp = responseBody['timestamp'];
         final messages = List<String>.from(responseBody['messages']);
-        final status = responseBody['status'];
-
-        print('Timestamp: $timestamp');
-        print('Messages: $messages');
-        print('Status: $status');
+        //final status = responseBody['status'];
+        String errorMessages = " ";
+        for (var element in messages) {
+          errorMessages = "$errorMessages, $element";
+        }
+        _isLoading = false;
+        notifyListeners();
+        return errorMessages;
       } else {
         print('Unexpected response status: ${response.statusCode}');
       }
     } catch (e) {
       print("Exception occurred: $e");
     }
-    return false;
+    _isLoading = false;
+    notifyListeners();
+    return "Unknown error occurred";
   }
 
   Future<bool> login({required String email, required String password}) async {
@@ -221,7 +233,7 @@ class Auth with ChangeNotifier {
 
   Future<void> addressRequest(
       String country, String city, String street, String zip) async {
-    //print(country +" "+ city + " "+ street + " "+ zip );
+    print(country + " " + city + " " + street + " " + zip);
     const addressRequestUrl =
         "https://ar-store-production.up.railway.app/api/addresses";
     Map<String, dynamic> requestAddressBody = {
@@ -232,7 +244,7 @@ class Auth with ChangeNotifier {
     };
     Map<String, String> requestHeaders = {
       'accept': '*/*',
-      'Authorization': 'Bearer {$token}',
+      'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     };
 
@@ -240,7 +252,7 @@ class Auth with ChangeNotifier {
       http.Response addressResponse = await http.post(
         Uri.parse(addressRequestUrl),
         headers: requestHeaders,
-        body: jsonEncode(requestAddressBody),
+        body: json.encode(requestAddressBody),
       );
       print('address ........' + addressResponse.statusCode.toString());
     } catch (e) {
@@ -267,7 +279,14 @@ class Auth with ChangeNotifier {
           name: responseData['name'],
           phoneNumber: responseData['phoneNumber'],
           gender: responseData['gender'],
+          address: Address(
+            country: responseData['addresses'][0]['country'],
+            city: responseData['addresses'][0]['city'],
+            street: responseData['addresses'][0]['street'],
+            zip: responseData['addresses'][0]['zip'],
+          ),
         );
+        _authenticated = true;
         notifyListeners();
         return true;
       } else if (response.statusCode == StatusCode.forbidden) {

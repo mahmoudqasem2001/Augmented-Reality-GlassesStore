@@ -354,4 +354,27 @@ class Products with ChangeNotifier {
       throw "Error : $e";
     }
   }
+
+  Future deleteProduct(int id) async {
+    print(id);
+    String url = 'https://ar-store-production.up.railway.app/api/glasses/$id';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {
+          'accept': '*/*',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print('Glasses deleted successfully');
+      } else {
+        print('Failed to delete glasses. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 }

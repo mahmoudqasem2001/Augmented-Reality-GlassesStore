@@ -56,12 +56,12 @@ class _CustomerAccountScreenState extends State<CustomerAccountScreen> {
                   _buildAccountInfo(
                       'Phone Number:', customerResponseData.phoneNumber),
                   _buildAccountInfo('Gender:', customerResponseData.gender),
-                  // _buildAccountInfo(
-                  //     'Country:', customerResponseData.address?.country),
-                  // _buildAccountInfo('City:', customerResponseData.address?.city),
-                  // _buildAccountInfo(
-                  //     'City:', customerResponseData.address?.street),
-                  // _buildAccountInfo('ZIP:', customerResponseData.address?.zip),
+                  _buildAccountInfo(
+                      'Country:', customerResponseData.address?.country),
+                  _buildAccountInfo('City:', customerResponseData.address?.city),
+                  _buildAccountInfo(
+                      'City:', customerResponseData.address?.street),
+                  _buildAccountInfo('ZIP:', customerResponseData.address?.zip),
                 ],
               ),
             ),

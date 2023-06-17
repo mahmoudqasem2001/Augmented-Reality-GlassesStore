@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/products_provider.dart';
 import '../../screens/edit_product_screens/edit_product_screens.dart';
 
 class StoreProductItem extends StatelessWidget {
@@ -11,6 +13,7 @@ class StoreProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productsProvider = Provider.of<Products>(context, listen: false);
     final scaffold = ScaffoldMessenger.of(context);
     return ListTile(
       tileColor: Colors.grey[200],
@@ -34,8 +37,10 @@ class StoreProductItem extends StatelessWidget {
             IconButton(
               onPressed: () async {
                 try {
-                  // await Provider.of<Products>(context, listen: false)
-                  //     .deleteProduct(id);
+                  await productsProvider
+                      .deleteProduct(id);
+                  await productsProvider
+                      .fetchStoreProducts();
                 } catch (e) {
                   scaffold.showSnackBar(
                     const SnackBar(

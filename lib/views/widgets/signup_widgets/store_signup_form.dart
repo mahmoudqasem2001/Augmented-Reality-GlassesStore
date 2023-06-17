@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -38,39 +37,24 @@ class _StoreSignUpFormState extends State<StoreSignUpForm> {
     FocusScope.of(context).unfocus();
     _formKey.currentState!.save();
 
-    try {
-      final authProvider = Provider.of<Auth>(context, listen: false);
-      authProvider.setLoadingIndicator(true);
-      await Provider.of<Auth>(context, listen: false)
-          .storeRegister(
-              storeName: name.text,
-              phoneNumber: '0' + phoneNumber.text,
-              country: country.text,
-              city: city.text,
-              street: street.text,
-              zip: zip.text,
-              email: email.text,
-              password: password.text)
-          .then((value) => authProvider.setAuthentucated(value));
-    } on HttpException catch (error) {
-      var errorMessage = 'Authentication failed';
-      if (error.toString().contains('EMAIL_EXIST')) {
-        errorMessage = 'This email address is already use';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'This is not a valid email address';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'This password is too weak';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'Could not find a user with that email';
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
-        errorMessage = 'Invalid password';
-      }
-      _showErrorDialog(errorMessage);
-    } catch (error) {
-      print(error);
-      const errorMessage =
-          'Could not authenticate you. Please try again later.';
-      _showErrorDialog(errorMessage);
+    final authProvider = Provider.of<Auth>(context, listen: false);
+
+    authProvider.setLoadingIndicator(true);
+    String message = " ";
+    await Provider.of<Auth>(context, listen: false)
+        .storeRegister(
+            storeName: name.text,
+            phoneNumber: '0' + phoneNumber.text,
+            country: country.text,
+            city: city.text,
+            street: street.text,
+            zip: zip.text,
+            email: email.text,
+            password: password.text)
+        .then((value) => message = value);
+
+    if (message != "success") {
+      _showErrorDialog(message);
     }
   }
 
@@ -78,6 +62,7 @@ class _StoreSignUpFormState extends State<StoreSignUpForm> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.redAccent,
         title: const Text('An Error Occurred!'),
         content: Text(errorMessage),
         actions: [
