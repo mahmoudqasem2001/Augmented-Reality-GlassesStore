@@ -76,7 +76,6 @@ class Cart with ChangeNotifier {
       'itemId': productId,
       'quantity': quantity,
       'id': {
-        'customerId': id,
         'itemId': productId,
       }
     };

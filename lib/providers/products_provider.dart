@@ -141,6 +141,7 @@ class Products with ChangeNotifier {
               price: map['price'] as double,
               rating: map['rating'] as double,
               quantity: map['quantity'] as int,
+              description: map['description'],
               store: Store(
                 id: map['store']['id'],
                 name: map['store']['name'],
@@ -312,7 +313,7 @@ class Products with ChangeNotifier {
 
     if (response.statusCode == StatusCode.created) {
       print('created successful');
-      final responseData = json.decode(response.body);
+      //final responseData = json.decode(response.body);
       // await postPhotos(productId, files);
     } else {
       print('created failed with status: ${response.statusCode}');
@@ -320,11 +321,17 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(Map<String, dynamic> editedProduct) async {
-    int id = editedProduct['id'];
-    final prodIndex = _items.indexWhere((prod) => prod.id == id);
-    if (prodIndex >= 0) {
-      final url = 'https://ar-store-production.up.railway.app/api/glasses/$id';
+    int productId = editedProduct['id'];
+    final url =
+        'https://ar-store-production.up.railway.app/api/glasses/$productId';
+    final headers = {
+      'accept': '*/*',
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+    try {
       final res = await http.put(Uri.parse(url),
+          headers: headers,
           body: json.encode({
             'id': editedProduct['id'],
             'description': editedProduct['description'],
@@ -334,12 +341,17 @@ class Products with ChangeNotifier {
             'color': editedProduct['color'],
             'type': editedProduct['type'],
             'gender': editedProduct['gender'],
-            'boder': editedProduct['boder'],
+            'border': editedProduct['border'],
             'shape': editedProduct['shape'],
           }));
-      print('edit');
-      print(res.statusCode);
-      notifyListeners();
+      print(editedProduct.values);
+      if (res.statusCode == StatusCode.ok) {
+        await fetchStoreProducts();
+      } else if (res.statusCode == StatusCode.badRequest) {
+        print(json.decode(res.body));
+      }
+    } catch (e) {
+      throw "Error : $e";
     }
   }
 }

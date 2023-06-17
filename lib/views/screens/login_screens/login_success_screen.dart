@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/views/screens/home_screens/home_screen.dart';
 
 class LoginSuccessScreen extends StatelessWidget {
@@ -8,7 +6,6 @@ class LoginSuccessScreen extends StatelessWidget {
   static const routeName = '/login_success';
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<Auth>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondary,

@@ -49,7 +49,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       brands.putIfAbsent(brand.id!, () => brand.name!);
     }
 
-    Map<String, dynamic> _editedProduct = {
+    Map<String, dynamic> editedProduct = {
       'id': productId,
       'model': initialProduct.model,
       'description': initialProduct.description,
@@ -64,27 +64,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
     };
 
     Widget editItemPrice() {
-      return  TextFormField(
-          initialValue: initialProduct.price.toString(),
-          decoration: const InputDecoration(labelText: 'Price'),
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.number,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return "Please enter a price.";
-            }
-            if (double.tryParse(value) == null) {
-              return "Please enter a valid price.";
-            }
-            if (double.parse(value) <= 0) {
-              return "Please enter a number greater than zero";
-            }
-            return null;
-          },
-          onSaved: (newValue) {
-            _editedProduct['price'] = double.parse(newValue!);
-          },
-        
+      return TextFormField(
+        initialValue: initialProduct.price.toString(),
+        decoration: const InputDecoration(labelText: 'Price'),
+        textInputAction: TextInputAction.next,
+        keyboardType: TextInputType.number,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Please enter a price.";
+          }
+          if (double.tryParse(value) == null) {
+            return "Please enter a valid price.";
+          }
+          if (double.parse(value) <= 0) {
+            return "Please enter a number greater than zero";
+          }
+          return null;
+        },
+        onChanged: (newValue) {
+          editedProduct['price'] = double.parse(newValue);
+        },
       );
     }
 
@@ -106,8 +105,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
           }
           return null;
         },
-        onSaved: (newValue) {
-          _editedProduct['quantity'] = int.parse(newValue!);
+        onChanged: (newValue) {
+          editedProduct['quantity'] = int.parse(newValue);
         },
       );
     }
@@ -123,8 +122,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
           }
           return null;
         },
-        onSaved: (newValue) {
-          _editedProduct['model'] = newValue;
+        onChanged: (newValue) {
+          editedProduct['model'] = newValue;
         },
       );
     }
@@ -154,7 +153,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
               ),
               onChanged: (String? newValue) {
-                _editedProduct['color'] = newValue;
+                editedProduct['color'] = newValue;
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -194,7 +193,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
               ),
               onChanged: (String? newValue) {
-                _editedProduct['type'] = newValue;
+                editedProduct['type'] = newValue;
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -234,7 +233,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
               ),
               onChanged: (String? newValue) {
-                _editedProduct['gender'] = newValue;
+                editedProduct['gender'] = newValue;
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -274,7 +273,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
               ),
               onChanged: (String? newValue) {
-                _editedProduct['border'] = newValue;
+                editedProduct['border'] = newValue;
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -314,7 +313,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
               ),
               onChanged: (String? newValue) {
-                _editedProduct['shape'] = newValue;
+                editedProduct['shape'] = newValue;
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -360,7 +359,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     id = key;
                   }
                 });
-                _editedProduct['brandId'] = id;
+                editedProduct['brandId'] = id;
               },
               validator: (value) {
                 if (value!.isEmpty) {
@@ -384,8 +383,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
           IconButton(
             onPressed: () async {
               try {
-                if (_editedProduct['id'] != null) {
-                  await productsProvider.updateProduct(_editedProduct);
+                if (editedProduct['id'] != null) {
+                  await productsProvider.updateProduct(editedProduct);
                 }
               } catch (e) {
                 await showDialog(

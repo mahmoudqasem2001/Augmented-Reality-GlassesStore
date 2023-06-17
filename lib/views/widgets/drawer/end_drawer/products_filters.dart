@@ -24,12 +24,9 @@ class ProductFilterWidget extends StatelessWidget {
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.gender,
             onChanged: (value) {
-              // final newFilter =
-              //     productFilter.currentFilter.copyWith(gender: value);
-              // productFilter.updateFilter(newFilter);
               genderFilter = value;
             },
-            items:const [
+            items: const [
               DropdownMenuItem(value: 'MALE', child: Text('MALE')),
               DropdownMenuItem(value: 'FEMALE', child: Text('FEMALE')),
             ],
@@ -42,16 +39,14 @@ class ProductFilterWidget extends StatelessWidget {
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.brand?.name,
             onChanged: (value) {
-              // final newFilter =
-              //     productFilter.currentFilter.copyWith(brand: value);
-              // productFilter.updateFilter(newFilter);
               brandNameFilter = value;
             },
             items: [
               DropdownMenuItem(
                   value: 'ALESSIO SUNGLASSES',
                   child: Text('ALESSIO SUNGLASSES')),
-              DropdownMenuItem(value: 'BYALLY SUNGLASSES', child: Text('BYALLY SUNGLASSES')),
+              DropdownMenuItem(
+                  value: 'BYALLY SUNGLASSES', child: Text('BYALLY SUNGLASSES')),
             ],
             decoration: InputDecoration(
               labelText: 'Brand',
@@ -62,14 +57,12 @@ class ProductFilterWidget extends StatelessWidget {
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.type,
             onChanged: (value) {
-              // final newFilter =
-              //     productFilter.currentFilter.copyWith(type: value);
-              // productFilter.updateFilter(newFilter);
               typeFilter = value;
             },
             items: [
               DropdownMenuItem(value: 'SunGlasses', child: Text('SunGlasses')),
-              DropdownMenuItem(value: 'ProtectionGlasses', child: Text('ProtectionGlasses')),
+              DropdownMenuItem(
+                  value: 'ProtectionGlasses', child: Text('ProtectionGlasses')),
             ],
             decoration: InputDecoration(
               labelText: 'Type',
@@ -79,9 +72,6 @@ class ProductFilterWidget extends StatelessWidget {
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.gender,
             onChanged: (value) {
-              // final newFilter =
-              //     productFilter.currentFilter.copyWith(gender: value);
-              // productFilter.updateFilter(newFilter);
               borderFilter = value;
             },
             items: [
@@ -96,12 +86,9 @@ class ProductFilterWidget extends StatelessWidget {
           DropdownButtonFormField<String>(
             value: productFilter.currentFilter.gender,
             onChanged: (value) {
-              // final newFilter =
-              //     productFilter.currentFilter.copyWith(gender: value);
-              // productFilter.updateFilter(newFilter);
               shapeFilter = value;
             },
-            items:const [
+            items: const [
               DropdownMenuItem(value: 'Square', child: Text('Square')),
               DropdownMenuItem(value: 'Circular', child: Text('Circular')),
             ],
@@ -116,7 +103,7 @@ class ProductFilterWidget extends StatelessWidget {
               productFilter.updateFilter(genderFilter, brandNameFilter,
                   typeFilter, borderFilter, shapeFilter);
             },
-            child:const Text('Apply Filter'),
+            child: const Text('Apply Filter'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -127,7 +114,7 @@ class ProductFilterWidget extends StatelessWidget {
               shapeFilter = null;
               productFilter.clearFilters();
             },
-            child:const Text('Clear Filters'),
+            child: const Text('Clear Filters'),
           ),
         ],
       ),
