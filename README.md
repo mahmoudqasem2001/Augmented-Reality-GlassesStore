@@ -25,10 +25,8 @@ Through a user-friendly interface, customers can browse and virtually try on gla
 ## Technologies Used
 
 - Flutter: Cross-platform framework for building mobile apps
-- Spring Boot: Java-based framework for building RESTful APIs
-- PostgreSQL: Relational database management system
 - Unity 3D: Game development platform
-- AR Foundation: Augmented Reality (AR) framework for Unity
+
 
 ## Getting Started
 
