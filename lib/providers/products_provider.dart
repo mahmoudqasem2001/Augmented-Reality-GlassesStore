@@ -7,7 +7,7 @@ import 'package:shop_app/models/store.dart';
 import '../models/brand.dart';
 import '../models/glasses_filter.dart';
 import '../shared/constants/constants.dart';
-import 'product_provider.dart';
+import '../models/product.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 
@@ -21,6 +21,7 @@ class Products with ChangeNotifier {
   String _dropdownValue = 'Lowest Price';
   int _productQuantity = 0;
   bool _showAttributes = false;
+  int _inventoryQuantity = 0;
 
   int _bottomBarSelectedIndex = 0;
 
@@ -28,6 +29,7 @@ class Products with ChangeNotifier {
     return _bottomBarSelectedIndex;
   }
 
+  get inventoryQuantity => _inventoryQuantity;
   bool get showAttributes {
     return _showAttributes;
   }
@@ -55,6 +57,22 @@ class Products with ChangeNotifier {
       _brands.add(product.brand);
     }
     return _brands;
+  }
+
+  void setInventoryQuantity(int quantity) {
+    _inventoryQuantity = quantity;
+    notifyListeners();
+  }
+
+  void incInventoryQuantity() {
+    _inventoryQuantity++;
+    notifyListeners();
+  }
+
+  void decInventoryQuantity() {
+    if (_inventoryQuantity <= 0) return;
+    _inventoryQuantity--;
+    notifyListeners();
   }
 
   void setBottomBarSelectedIndex(index) {
@@ -87,7 +105,7 @@ class Products with ChangeNotifier {
       border: borderFilter,
       shape: shapeFilter,
     );
-
+    
     List<Product> filteredList;
     filteredList = _items
         .where((product) =>
@@ -123,6 +141,8 @@ class Products with ChangeNotifier {
 
   Product findById(int id) {
     Product foundedProduct = _items.firstWhere((prod) => prod.id == id);
+    _inventoryQuantity = foundedProduct.quantity!;
+    notifyListeners();
     return foundedProduct;
   }
 
@@ -132,38 +152,38 @@ class Products with ChangeNotifier {
           Uri.parse('https://ar-store-production.up.railway.app/api/glasses'));
       // print(response.statusCode);
       if (response.statusCode == StatusCode.ok) {
-        final jsonData = jsonDecode(response.body) as List<dynamic>;
+        final jsonData = json.decode(response.body) as List<dynamic>;
         List<Product> loadedProducts = [];
-        for (dynamic map in jsonData) {
+        for (var map in jsonData) {
           loadedProducts.add(
             Product(
-              id: map['id'],
-              price: map['price'] as double,
-              rating: map['rating'] as double,
-              quantity: map['quantity'] as int,
-              description: map['description'],
-              store: Store(
-                id: map['store']['id'],
-                name: map['store']['name'],
-                phoneNumber: map['store']['phoneNumber'],
-              ),
-              brand: Brand(
-                id: map['brand']['id'],
-                name: map['brand']['name'],
-                countryOfOrigin: map['brand']['countryOfOrigin'],
-              ),
-              model: map['model'],
-              color: map['color'],
-              type: map['type'],
-              gender: map['gender'],
-              border: map['border'],
-              shape: map['shape'],
-              imageUrls: [
-                'https://images.ray-ban.com/is/image/RayBan/8056597061421__STD__shad__qt.png?impolicy=RB_Product&width=1024&bgc=%23f2f2f2'
-              ],
-            ),
+                id: map['id'],
+                price: map['price'] as double,
+                rating: map['rating'] as double,
+                quantity: map['quantity'] as int,
+                description: map['description'],
+                store: Store(
+                  id: map['store']['id'],
+                  name: map['store']['name'],
+                  phoneNumber: map['store']['phoneNumber'],
+                ),
+                brand: Brand(
+                  id: map['brand']['id'],
+                  name: map['brand']['name'],
+                  countryOfOrigin: map['brand']['countryOfOrigin'],
+                ),
+                model: map['model'],
+                color: map['color'],
+                type: map['type'],
+                gender: map['gender'],
+                border: map['border'],
+                shape: map['shape'],
+                imageUrls: (map['photosUrls'] as List<dynamic>)
+                    .map((url) => url.toString())
+                    .toList()),
           );
         }
+        _inventoryQuantity = 0;
         _items = loadedProducts;
         _itemsFetched = true;
         _isLoadingIndicator = false;

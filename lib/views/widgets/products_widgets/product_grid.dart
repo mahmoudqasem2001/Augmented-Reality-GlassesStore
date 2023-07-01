@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/product_provider.dart';
+import 'package:shop_app/models/product.dart';
 import 'package:shop_app/views/widgets/products_widgets/product_item.dart';
 import '../../../providers/products_provider.dart';
 
@@ -20,20 +20,17 @@ class ProductsGrid extends StatelessWidget {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : prods.isEmpty
+            : products.items.isEmpty
                 ? const Center(
                     child: Text("There is no product!"),
                   )
                 : GridView.builder(
                     padding: const EdgeInsets.all(20.0),
-                    itemCount: prods.length,
+                    itemCount: products.items.length,
                     //use change notifier to make ProductItem wedget listen
                     // to any change in products[i] , every product on this screen
                     // wil listen to every change on his data
-                    itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-                      value: prods[i],
-                      child: const ProductItem(),
-                    ),
+                    itemBuilder: (ctx, index) =>  ProductItem(index),       
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,

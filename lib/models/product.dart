@@ -1,12 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-
-import 'package:flutter/material.dart';
-
 import 'package:shop_app/models/store.dart';
 
-import '../models/brand.dart';
+import 'brand.dart';
 
-class Product with ChangeNotifier {
+class Product  {
   final int? id;
   final Brand? brand;
   final String? model;

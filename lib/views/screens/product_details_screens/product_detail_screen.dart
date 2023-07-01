@@ -21,122 +21,133 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   var countOfProduct = 0;
   bool _showAttributes = false;
   double productRating = 0;
+
   @override
   Widget build(BuildContext context) {
     final productId = ModalRoute.of(context)!.settings.arguments!;
     final loadedProduct = Provider.of<Products>(context, listen: false)
         .findById(productId as int);
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.secondary,
-      body: ListView(
-        children: [
-          const ItemAppBar(),
-          Padding(
-            padding: const EdgeInsets.all(
-              10,
+    return Consumer<Products>(builder: (ctx, prods, _) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        body: ListView(
+          children: [
+            const ItemAppBar(),
+            Padding(
+              padding: const EdgeInsets.all(
+                10,
+              ),
+              child: imageSlider(),
             ),
-            child: imageSlider(),
-          ),
-          Arc(
-            edge: Edge.TOP,
-            arcType: ArcType.CONVEY,
-            height: 30,
-            child: Container(
-              width: double.infinity,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 50,
-                          ),
-                          child: Text(
-                            '\$${loadedProduct.price.toString()}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
+            Arc(
+              edge: Edge.TOP,
+              arcType: ArcType.CONVEY,
+              height: 30,
+              child: Container(
+                width: double.infinity,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 50,
+                            ),
+                            child: Text(
+                              '\$${prods.findById(productId as int).price.toString()}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 20,
-                        bottom: 10,
+                        ],
                       ),
-                      child: Row(
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                          bottom: 10,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              prods.findById(productId as int).brand!.name!,
+                              style: TextStyle(
+                                fontSize: 28,
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            loadedProduct.brand!.name!,
+                            loadedProduct.model!,
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: 20,
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          loadedProduct.model!,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 15,
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 15,
+                        child: productColor(),
                       ),
-                      child: productColor(),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
+                      const SizedBox(
+                        height: 30,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ratingStars(),
-                          const IncreaseDecreaseItem(),
-                        ],
+                      Consumer<Products>(
+                        builder: (ctx, prods, _) {
+                          return Row(children: [
+                            Text(
+                                "Quantity in inventory: ${prods.inventoryQuantity}")
+                          ]);
+                        },
                       ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    showProductAttribute(),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          bottom: 10,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ratingStars(),
+                            const IncreaseDecreaseItem(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      showProductAttribute(),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: const ItemBottomNavBar(),
-    );
+          ],
+        ),
+        bottomNavigationBar: const ItemBottomNavBar(),
+      );
+    });
   }
 
   Widget imageSlider() {
@@ -170,7 +181,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       'Brown': Colors.brown,
       'Black': Colors.black,
       'Red': Colors.red,
-      'Grey': Colors.grey, 
+      'Grey': Colors.grey,
       'Blue': Colors.blue
     };
 

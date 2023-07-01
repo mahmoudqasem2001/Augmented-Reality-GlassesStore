@@ -5,7 +5,7 @@ import 'package:shop_app/core/api/status_code.dart';
 import 'package:shop_app/models/brand.dart';
 import 'package:shop_app/models/cart_item.dart';
 import 'package:shop_app/models/store.dart';
-import 'package:shop_app/providers/product_provider.dart';
+import 'package:shop_app/models/product.dart';
 import 'package:shop_app/shared/constants/constants.dart';
 import '../models/order_item.dart';
 import 'package:http/http.dart' as http;

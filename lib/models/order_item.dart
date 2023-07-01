@@ -1,4 +1,4 @@
-import 'package:shop_app/providers/product_provider.dart';
+import 'package:shop_app/models/product.dart';
 
 class OrderItem {
   int quantity;

@@ -43,10 +43,10 @@ class ProductFilterWidget extends StatelessWidget {
             },
             items: [
               DropdownMenuItem(
-                  value: 'ALESSIO SUNGLASSES',
-                  child: Text('ALESSIO SUNGLASSES')),
+                  value: 'Prada',
+                  child: Text('Prada')),
               DropdownMenuItem(
-                  value: 'BYALLY SUNGLASSES', child: Text('BYALLY SUNGLASSES')),
+                  value: 'Ray-Ban', child: Text('Ray-Ban')),
             ],
             decoration: InputDecoration(
               labelText: 'Brand',
@@ -60,9 +60,13 @@ class ProductFilterWidget extends StatelessWidget {
               typeFilter = value;
             },
             items: [
-              DropdownMenuItem(value: 'SunGlasses', child: Text('SunGlasses')),
+              DropdownMenuItem(value: 'Sunglasses', child: Text('Sunglasses')),
               DropdownMenuItem(
                   value: 'ProtectionGlasses', child: Text('ProtectionGlasses')),
+                  DropdownMenuItem(
+                  value: 'Modern', child: Text('Modern')),
+                  DropdownMenuItem(
+                  value: 'Old', child: Text('Old')),
             ],
             decoration: InputDecoration(
               labelText: 'Type',
@@ -70,13 +74,13 @@ class ProductFilterWidget extends StatelessWidget {
             dropdownColor: themeColor,
           ),
           DropdownButtonFormField<String>(
-            value: productFilter.currentFilter.gender,
+            value: productFilter.currentFilter.border,
             onChanged: (value) {
               borderFilter = value;
             },
             items: [
-              DropdownMenuItem(value: 'thin', child: Text('thin')),
-              DropdownMenuItem(value: 'bold', child: Text('bold')),
+              DropdownMenuItem(value: 'Thin', child: Text('Thin')),
+              DropdownMenuItem(value: 'Bold', child: Text('Bold')),
             ],
             decoration: InputDecoration(
               labelText: 'Border',
@@ -84,13 +88,13 @@ class ProductFilterWidget extends StatelessWidget {
             dropdownColor: themeColor,
           ),
           DropdownButtonFormField<String>(
-            value: productFilter.currentFilter.gender,
+            value: productFilter.currentFilter.shape,
             onChanged: (value) {
               shapeFilter = value;
             },
             items: const [
               DropdownMenuItem(value: 'Square', child: Text('Square')),
-              DropdownMenuItem(value: 'Circular', child: Text('Circular')),
+              DropdownMenuItem(value: 'Rounded', child: Text('Rounded')),
             ],
             decoration: InputDecoration(
               labelText: 'Shape',

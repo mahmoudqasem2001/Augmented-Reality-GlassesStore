@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart_provider.dart';
 import 'package:shop_app/providers/orders_provider.dart';
-import 'package:shop_app/providers/product_provider.dart';
 import 'package:shop_app/providers/products_provider.dart';
 import 'package:shop_app/providers/stores_provider.dart';
 import 'package:shop_app/routes.dart';
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: Stores()),
         ChangeNotifierProvider.value(value: Auth()),
-        ChangeNotifierProvider.value(value: Product()),
         ChangeNotifierProvider.value(value: Products()),
         ChangeNotifierProvider.value(value: Orders()),
         ChangeNotifierProvider.value(value: Cart()),

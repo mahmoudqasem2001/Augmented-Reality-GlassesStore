@@ -1,20 +1,32 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:shop_app/shared/assets_images/assets_images.dart';
 import 'package:shop_app/views/screens/product_details_screens/product_detail_screen.dart';
-import '../../../providers/product_provider.dart';
+
+import '../../../providers/products_provider.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({Key? key}) : super(key: key);
+  final int index;
+  ProductItem(
+    this.index,
+    {Key? key}
+  );
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context, listen: false);
-
+    final products = Provider.of<Products>(context, listen: false);
+    final currentProduct = products.items[index];
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        color: Theme.of(context).colorScheme.secondary,
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primary,
+              width: 1.2,
+            ),
+            color: Colors.white),
         child: GridTile(
           footer: Padding(
             padding: const EdgeInsets.all(15),
@@ -22,7 +34,7 @@ class ProductItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  product.brand!.name!,
+                  currentProduct.brand?.name ?? '',
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -30,7 +42,7 @@ class ProductItem extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  '\$ ${product.price.toString()}',
+                  '\$ ${currentProduct.price.toString()}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.grey,
@@ -42,14 +54,14 @@ class ProductItem extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
-                  arguments: product.id);
+                  arguments: currentProduct.id);
             },
             child: Hero(
-                tag: product.id!,
+                tag: currentProduct.id ?? '',
                 child: FadeInImage(
                   placeholder: AssetImage(AssetsImages.glassesPlaceHolder),
                   image: NetworkImage(
-                    product.imageUrls![0],
+                    currentProduct.imageUrls?.first ?? '',
                   ),
                   fit: BoxFit.contain,
                 )),
