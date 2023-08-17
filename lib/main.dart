@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             fontFamily: 'Lato',
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey)
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
                 .copyWith(secondary: Colors.deepOrange),
           ),
           home: auth.isAuth

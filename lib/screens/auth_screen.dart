@@ -16,7 +16,7 @@ class AuthScreen extends StatelessWidget {
 
     final ThemeData theme = Theme.of(context);
     final TextStyle style = theme.textTheme.displayLarge!.copyWith(
-      color: theme.colorScheme.onSecondary,
+      color: Colors.green,
       fontSize: 50,
       fontFamily: 'Anton',
     );
@@ -27,8 +27,8 @@ class AuthScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color.fromARGB(255, 152, 72, 214).withOpacity(0.5),
-                  const Color.fromRGBO(215, 188, 117, 1).withOpacity(0.9),
+                  Color.fromARGB(255, 38, 218, 2).withOpacity(0.5),
+                  Color.fromARGB(255, 229, 225, 213).withOpacity(0.9),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -57,7 +57,7 @@ class AuthScreen extends StatelessWidget {
                         ..translate(0.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.blueGrey,
+                        color: Colors.white,
                         boxShadow: const [
                           BoxShadow(
                             blurRadius: 8,
@@ -306,7 +306,7 @@ class _AuthCardState extends State<AuthCard>
                     borderRadius: BorderRadius.circular(30),
                   ),
                   padding:const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                  color: Colors.blueGrey,
+                  color: Colors.green,
                   textColor:
                       Theme.of(context).primaryTextTheme.titleLarge?.color,
                 ),
